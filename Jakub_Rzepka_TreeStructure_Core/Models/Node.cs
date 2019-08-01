@@ -9,22 +9,21 @@ namespace Jakub_Rzepka_TreeStructure_Core.Models
 {
     public class Node
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int NodeId { get; private set; }
-
-        public string Name { get; set; }
-
-        public int? ParentNodeId { get; private set; }
-
-        [ForeignKey("ParentNodeId")]
-        public Node ParentNode { get; set; }
-
-        public List<Node> SubNodes { get; set; }
-
         public Node()
         {
             SubNodes = new List<Node>();
         }
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        public string Name { get; set; }
+
+        public int? ParentNodeId { get; set; }
+
+        public virtual Node ParentNode { get; set; }
+
+        public virtual List<Node> SubNodes { get; set; }
     }
 }
