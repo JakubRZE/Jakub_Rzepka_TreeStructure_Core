@@ -20,7 +20,8 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var nodes = _nodeRepository.GetAllNodes().ToList();
+            return View(nodes);
         }
     }
 }

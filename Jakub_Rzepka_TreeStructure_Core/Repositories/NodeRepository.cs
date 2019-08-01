@@ -18,7 +18,8 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
 
         public IEnumerable<Node> GetAllNodes()
         {
-            throw new NotImplementedException();
+            var nodes = _appDbContext.Nodes.ToList();
+            return nodes;
         }
     }
 }
