@@ -4,12 +4,23 @@
     loadData();
 
 
-    $(document).on("click", (e) => {
-        var ulName = e.target.getAttribute('name');
-        $("#" + ulName).slideToggle();
-    });
+    //Slide toggle on click
+
+    //$(document).on("click", (e) => {
+    //    var ulName = e.target.getAttribute('name');
+    //    $("#" + ulName).slideToggle();
+    //});
 
 
+    //$(document).on("click", (e) => {
+    //    var ulName = e.target.getAttribute('name');
+    //    $("#" + ulName).toggleClass('desc');
+    //});
+
+   
+    SortList();
+
+    
 
 });
 
@@ -67,4 +78,37 @@ function appendNode(node, appendTo) {
 
 
 
+function SortList() {
+
+    $(document).on("click", (e) => {
+        var listId = "#" + e.target.getAttribute('name');
+
+        sorting(listId);
+        $(listId).toggleClass('desc');
+
+    });
+}
+
+
+function sorting(listId) {
+
+    $(listId).html(
+
+        $(listId).children("li").sort(function (a, b) {
+
+            if (!$(listId).hasClass("desc")) {
+                return $(a).text().toUpperCase().localeCompare(
+
+                    $(b).text().toUpperCase());
+            }
+            else {
+                return -$(a).text().toUpperCase().localeCompare(
+
+                    $(b).text().toUpperCase());
+            }
+
+        })
+    );
+
+}
 
