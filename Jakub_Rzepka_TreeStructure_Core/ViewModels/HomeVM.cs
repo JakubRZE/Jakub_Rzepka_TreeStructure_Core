@@ -10,10 +10,12 @@ namespace Jakub_Rzepka_TreeStructure_Core.ViewModels
     public class HomeVM
     {
         public int Id { get; set; }
-
+                
         [Required]
         public string Name { get; set; }
 
         public int? ParentNodeId { get; set; }
+
+        public bool HasChildren { get; set; }
     }
 }

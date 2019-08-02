@@ -23,7 +23,8 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
             {
                 Id = n.Id,
                 Name = n.Name,
-                ParentNodeId = n.ParentNodeId
+                ParentNodeId = n.ParentNodeId,
+                HasChildren = n.SubNodes.Any()
 
             }).OrderBy(n => n.ParentNodeId).ToList();
 
