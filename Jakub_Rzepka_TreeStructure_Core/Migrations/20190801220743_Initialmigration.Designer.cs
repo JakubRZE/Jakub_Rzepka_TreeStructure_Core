@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Jakub_Rzepka_TreeStructure_Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190801184422_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20190801220743_Initialmigration")]
+    partial class Initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

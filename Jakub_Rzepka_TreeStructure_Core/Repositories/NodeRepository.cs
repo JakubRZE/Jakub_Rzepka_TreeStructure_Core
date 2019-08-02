@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Jakub_Rzepka_TreeStructure_Core.DAL;
 using Jakub_Rzepka_TreeStructure_Core.Models;
+using Jakub_Rzepka_TreeStructure_Core.ViewModels;
 
 namespace Jakub_Rzepka_TreeStructure_Core.Repositories
 {
@@ -16,9 +17,16 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
             _appDbContext = appDbContext;
         }
 
-        public IEnumerable<Node> GetAllNodes()
+        public List<HomeVM> GetAllNodes()
         {
-            var nodes = _appDbContext.Nodes.ToList();
+            var nodes = _appDbContext.Nodes.Select(n => new HomeVM
+            {
+                Id = n.Id,
+                Name = n.Name,
+                ParentNodeId = n.ParentNodeId
+
+            }).OrderBy(n => n.ParentNodeId).ToList();
+
             return nodes;
         }
     }

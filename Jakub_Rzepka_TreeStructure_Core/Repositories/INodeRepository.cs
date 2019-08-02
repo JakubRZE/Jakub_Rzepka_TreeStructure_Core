@@ -1,4 +1,5 @@
 ﻿using Jakub_Rzepka_TreeStructure_Core.Models;
+using Jakub_Rzepka_TreeStructure_Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
 {
     public interface INodeRepository
     {
-        IEnumerable<Node> GetAllNodes();
+        List<HomeVM> GetAllNodes();
     }
 }

@@ -18,10 +18,19 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
             _nodeRepository = nodeRepository;
         }
 
+
+
         public IActionResult Index()
         {
-            var nodes = _nodeRepository.GetAllNodes().ToList();
-            return View(nodes);
+            return View();
         }
+
+        public JsonResult GetNodes()
+        {
+            var nodes = _nodeRepository.GetAllNodes();
+            //return Json(new { nodes = _nodeRepository.GetAllNodes() });
+            return Json(nodes);
+        }
+
     }
 }

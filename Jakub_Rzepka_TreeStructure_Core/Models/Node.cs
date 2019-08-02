@@ -11,7 +11,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Models
     {
         public Node()
         {
-            SubNodes = new List<Node>();
+            SubNodes = new HashSet<Node>();
         }
 
         [Key]
@@ -24,6 +24,6 @@ namespace Jakub_Rzepka_TreeStructure_Core.Models
 
         public virtual Node ParentNode { get; set; }
 
-        public virtual List<Node> SubNodes { get; set; }
+        public virtual ICollection<Node> SubNodes { get; set; }
     }
 }
