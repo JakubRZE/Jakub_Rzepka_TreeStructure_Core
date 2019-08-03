@@ -4,10 +4,11 @@
 
     //Slide toggle on click
     $(document).on("click", ".arrowIcon", (e) => {
-        var ulName = e.target.getAttribute('name');
-        $("#" + ulName).slideToggle();
+        var ulId = "#" + e.target.getAttribute('name');
+        $(ulId).slideToggle();
+        $(e.target).toggleClass("flip");
     });
-   
+
     //SortList();
 
 });
@@ -21,10 +22,10 @@ function loadData() {
         method: 'GET',
         dataType: 'json',
         success: (data) => {
-            
+
             treeBuilder(null, data);
             MakeListSortable();
-             
+
         },
         error: (xhr, ajaxOptions, thrownError) => {
             alert(xhr.status);
@@ -40,25 +41,21 @@ function treeBuilder(parentId, data) {
         if (node.parentNodeId === null) {
             appendNode(node, '.wrap');
         }
-        else
-        {
-            if (node.hasChildren == true)
-            {
+        else {
+            if (node.hasChildren == true) {
                 var parentNodeId = "#" + node.parentNodeId;
                 appendNode(node, parentNodeId);
             }
-            else
-            {
+            else {
                 var nodeHtml =
                     `<li  id="${node.id}" class="ui-state-default m-0 p-0 ${node.parentNodeId}">
                          <div class="flexbox">         
                             <div class="d-inline pl-2">
-                                <span style="font-size: 0.3em; vertical-align: middle;">
-                                   <i class="fas fa-circle" style="vertical-align: middle;"></i> 
-                                </span>
+                               
+
                             </div>
 
-                            <div class="d-inline customElement pl-2">
+                            <div class="d-inline customElement pl-3">
                                 Item 3
                             </div>
                         </div>
@@ -70,12 +67,16 @@ function treeBuilder(parentId, data) {
     }
 }
 
+//<span style="font-size: 0.3em; vertical-align: middle;">
+//    <i class="fas fa-circle" style="vertical-align: middle;"></i>
+//</span>
+
 function appendNode(node, appendTo) {
     var nodeHtml =
         `<li class="ui-state-default m-0 p-0 ${node.parentNodeId}" name="${node.id}">
             <div class="flexbox">
                 <div class="d-inline ">
-                    <i class="fas fa-caret-right text-center arrowIcon" name="${node.id}"></i>
+                    <i class="fas fa-caret-down text-center arrowIcon" name="${node.id}"></i>
                 </div>
                 <div class="d-inline customElement pl-1">
                    ${node.name}
@@ -90,13 +91,11 @@ function appendNode(node, appendTo) {
 
 
 function SortList() {
-
     $(document).on("click", (e) => {
         var listId = "#" + e.target.getAttribute('name');
 
         sorting(listId);
         $(listId).toggleClass('desc');
-
     });
 }
 
@@ -123,9 +122,9 @@ function sorting(listId) {
 }
 
 function MakeListSortable() {
-        $(".sortable").sortable({
-            connectWith: ".connectedSortable"
-        }).disableSelection();
+    $(".sortable").sortable({
+        connectWith: ".connectedSortable"
+    }).disableSelection();
 }
 
 
