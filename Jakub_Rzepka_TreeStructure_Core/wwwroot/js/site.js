@@ -1,30 +1,15 @@
 ﻿$(document).ready(() => {
 
-
     loadData();
-
 
     //Slide toggle on click
     $(document).on("click", ".arrowIcon", (e) => {
         var ulName = e.target.getAttribute('name');
         $("#" + ulName).slideToggle();
     });
-
-
-    //$(document).on("click", (e) => {
-    //    var ulName = e.target.getAttribute('name');
-    //    $("#" + ulName).toggleClass('desc');
-    //});
-
    
     //SortList();
 
-    
-    $(function () {
-        $(".sortable").sortable({
-            connectWith: ".connectedSortable"
-        }).disableSelection();
-    });
 });
 
 function loadData() {
@@ -38,6 +23,7 @@ function loadData() {
         success: (data) => {
             
             treeBuilder(null, data);
+            MakeListSortable();
              
         },
         error: (xhr, ajaxOptions, thrownError) => {
@@ -64,7 +50,6 @@ function treeBuilder(parentId, data) {
             else
             {
                 var nodeHtml =
-                    //`<li id="${node.id}" class="ui-state-default m-0 p-0 ${node.parentNodeId}"> ${node.name} </li>`;
                     `<li  id="${node.id}" class="ui-state-default m-0 p-0 ${node.parentNodeId}">
                          <div class="flexbox">         
                             <div class="d-inline pl-2">
@@ -87,21 +72,15 @@ function treeBuilder(parentId, data) {
 
 function appendNode(node, appendTo) {
     var nodeHtml =
-        //`<li class="ui-state-default ${node.parentNodeId}"  name="${node.id}"> ${node.name}
-        //               <ul id="${node.id}" class="sortable">    
-        //               </ul>
-        //            </li>`
         `<li class="ui-state-default m-0 p-0 ${node.parentNodeId}" name="${node.id}">
             <div class="flexbox">
                 <div class="d-inline ">
                     <i class="fas fa-caret-right text-center arrowIcon" name="${node.id}"></i>
                 </div>
-
                 <div class="d-inline customElement pl-1">
                    ${node.name}
                 </div>
             </div>
-
             <ul id="${node.id}" class="sortable customUlist connectedSortable">
             </ul>
         </li>`;
@@ -120,7 +99,6 @@ function SortList() {
 
     });
 }
-
 
 function sorting(listId) {
 
@@ -143,4 +121,11 @@ function sorting(listId) {
     );
 
 }
+
+function MakeListSortable() {
+        $(".sortable").sortable({
+            connectWith: ".connectedSortable"
+        }).disableSelection();
+}
+
 
