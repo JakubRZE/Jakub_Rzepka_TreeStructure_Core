@@ -69,7 +69,7 @@ body {
 }
 
     .customElement:hover {
-        background-color: #e2e2e2;
+        background-color: #efefef;
         cursor: pointer;
     }
 
@@ -92,4 +92,38 @@ align-items: center;
 align-content: center;
 }
 
+.customInput {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
 
+    .customInput:hover {
+        background-color: #efefef;
+    }
+
+    .customInput:focus {
+        border: none;
+        background-color: #ffc107;
+        cursor: pointer;
+        box-shadow: none;
+        outline: none;
+    }
+
+.Active {
+    background-color: #ffc107;
+
+}
+
+
+.IcoBtn {
+    cursor: pointer;
+    padding: 16px;
+}
+
+    .IcoBtn:hover {
+        cursor: pointer;
+        background-color: #ffc107;
+    }
