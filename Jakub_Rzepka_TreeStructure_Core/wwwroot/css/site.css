@@ -48,6 +48,11 @@ body {
     margin-bottom: 60px;
 }
 
+.scroll {
+    overflow-y: scroll;
+    height:500px;
+}
+
 .footer {
     position: absolute;
     bottom: 0;
@@ -140,3 +145,7 @@ body {
         cursor: pointer;
         background-color: #e7af08;
     }
+
+.disabled {
+    color: #cecccc;
+}

@@ -35,7 +35,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
         [HttpPost]
         public JsonResult AddNewNode(string name, int? parentId)
         {
-            var newNodeId = _nodeRepository.AddNode(new AddNodeVM
+            var newNodeId = _nodeRepository.AddNode(new NodeVM
             {
                 Name = name,
                 ParentNodeId = parentId,
@@ -44,5 +44,22 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
             return Json(new { success = true, nodeName = name, newNodeId, nodeParentId = parentId });
         }
 
+        [HttpPost]
+        public JsonResult DeleteNode(int id)
+        {
+            _nodeRepository.DeleteNode(id);
+            return Json(new { success = true,  nodeId = id });
+        }
+
+        [HttpPost]
+        public JsonResult EditNode(string name, int id)
+        {
+            _nodeRepository.EditNode(new NodeVM
+            {
+                Id = id,
+                Name = name
+            });
+            return Json(new { success = true, nodeId = id });
+        }
     }
 }

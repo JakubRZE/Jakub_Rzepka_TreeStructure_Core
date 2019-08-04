@@ -31,12 +31,12 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
             return nodes;
         }
 
-        public int AddNode(AddNodeVM addNode)
+        public int AddNode(NodeVM nodeVM)
         {
             var node = new Node
             {
-                Name = addNode.Name,
-                ParentNodeId = addNode.ParentNodeId
+                Name = nodeVM.Name,
+                ParentNodeId = nodeVM.ParentNodeId
             };
 
             _appDbContext.Nodes.Add(node);
@@ -47,12 +47,18 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
 
         public void DeleteNode(int id)
         {
-            throw new NotImplementedException();
+            Node node = _appDbContext.Nodes.Find(id);
+            _appDbContext.Nodes.Remove(node);
+            _appDbContext.SaveChanges();
         }
 
-        public void EditNode(int id)
+        public void EditNode(NodeVM nodeVM)
         {
-            throw new NotImplementedException();
+            Node node = _appDbContext.Nodes.Find(nodeVM.Id);
+            node.Name = nodeVM.Name;
+
+            _appDbContext.Update(node);
+            _appDbContext.SaveChanges();
         }
     }
 }

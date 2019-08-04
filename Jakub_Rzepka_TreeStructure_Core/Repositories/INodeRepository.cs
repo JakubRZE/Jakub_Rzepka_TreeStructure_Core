@@ -11,9 +11,9 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
     {
         List<HomeVM> GetAllNodes();
 
-        int AddNode(AddNodeVM addNode);
+        int AddNode(NodeVM nodeVM);
 
-        void EditNode(int id);
+        void EditNode(NodeVM nodeVM);
 
         void DeleteNode(int id);
     }

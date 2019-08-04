@@ -1,7 +1,7 @@
 ﻿$(document).ready(() => {
 
     loadData();
-
+    
 });
 
 function loadData() {
@@ -24,6 +24,7 @@ function loadData() {
             ShowHideLists();
 
             AddNewNode();
+            DeleteNode();
 
         },
         error: (xhr, ajaxOptions, thrownError) => {
@@ -77,10 +78,12 @@ function MarkAsActive() {
         if (!$(e.target).hasClass("Active")) {
             $(".Active").removeClass("Active")
             $(e.target).addClass("Active");
+            $("#Edit, #Del").removeClass("disabled")
         }
         else {
             $(".Active").removeClass("Active")
             $('input').blur();
+            $("#Edit, #Del").addClass("disabled")
         }
     });
 }
@@ -186,7 +189,10 @@ function AddNode(e, appendTo) {
             if (response.success) {
 
                 var parentId = response.nodeParentId === null ? "" : response.nodeParentId;
-                GenerateHTML(response.nodeName, response.newNodeId, parentId, false, "#" + appendTo);
+                if (appendTo !== ".wrap") appendTo = "#" + appendTo;
+
+                GenerateHTML(response.nodeName, response.newNodeId, parentId, false, appendTo);
+                $("#Edit, #Del").removeClass("disabled");
                 FocusOn(response.newNodeId);
 
             } else {
@@ -208,4 +214,46 @@ function NameGenerator(count) {
     }
 
     return name;
+}
+
+function DeleteNode() {
+    $(document).on("click", "#Del", (e) => {
+
+        if ($("input").hasClass("Active"))
+        {
+            var nodeId = $(".Active").attr('name');
+            Delete(e, nodeId)
+        }
+      
+
+    });
+}
+
+function Delete(e, nodeId)
+{
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+
+    $.ajax({
+        url: '/Home/DeleteNode',
+        method: 'POST',
+        //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        dataType: 'json',
+        data: {
+            //__RequestVerificationToken: token,
+            id: nodeId
+        },
+        success: (response) => {
+            if (response.success) {
+
+                $('li[name=' + nodeId + ']').remove();
+                $("#Edit, #Del").addClass("disabled");
+
+            } else {
+                alert('not success')
+            }
+        },
+        error: () => { alert('Something goes worng:(') }
+    });
 }
