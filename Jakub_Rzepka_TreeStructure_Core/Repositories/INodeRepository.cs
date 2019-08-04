@@ -10,5 +10,11 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
     public interface INodeRepository
     {
         List<HomeVM> GetAllNodes();
+
+        int AddNode(AddNodeVM addNode);
+
+        void EditNode(int id);
+
+        void DeleteNode(int id);
     }
 }

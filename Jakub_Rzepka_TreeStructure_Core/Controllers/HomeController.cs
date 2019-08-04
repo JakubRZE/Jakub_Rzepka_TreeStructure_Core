@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Jakub_Rzepka_TreeStructure_Core.Models;
 using Jakub_Rzepka_TreeStructure_Core.Repositories;
+using Jakub_Rzepka_TreeStructure_Core.ViewModels;
 
 namespace Jakub_Rzepka_TreeStructure_Core.Controllers
 {
@@ -28,8 +29,19 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
         public JsonResult GetNodes()
         {
             var nodes = _nodeRepository.GetAllNodes();
-            //return Json(new { nodes = _nodeRepository.GetAllNodes() });
             return Json(nodes);
+        }
+
+        [HttpPost]
+        public JsonResult AddNewNode(string name, int? parentId)
+        {
+            var newNodeId = _nodeRepository.AddNode(new AddNodeVM
+            {
+                Name = name,
+                ParentNodeId = parentId,
+            });
+
+            return Json(new { success = true, nodeName = name, newNodeId, nodeParentId = parentId });
         }
 
     }

@@ -23,6 +23,8 @@ function loadData() {
             MarkAsActive();
             ShowHideLists();
 
+            AddNewNode();
+
         },
         error: (xhr, ajaxOptions, thrownError) => {
             alert(xhr.status);
@@ -35,20 +37,17 @@ function treeBuilder(parentId, data) {
     for (var node of data.filter(x => x.parentNodeId === parentId)) {
 
         var appendTo = parentId === null ? '.wrap' : "#" + node.parentNodeId;
-        var nodeHtml = GenerateHTML(node.name, node.id, node.parentNodeId, node.hasChildren);
-
-        $(appendTo).append(nodeHtml);
+        GenerateHTML(node.name, node.id, node.parentNodeId, node.hasChildren, appendTo);
 
         treeBuilder(node.id, data);
     }
 }
 
-function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren) {
+function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
 
     var arrowIcon = hasChildren ? `<i class="fas fa-caret-down text-center arrowIcon" name="${nodeId}"></i>` : "";
-    var anotherList = hasChildren ? `<ul id="${nodeId}" class="sortable customUlist connectedSortable toggle"> </ul>` : "";
 
-    var htmlForAppend = `<li class="ui-state-default m-0 p-0 ${parentNodeId} name="${nodeId}">
+    var htmlForAppend = `<li class="ui-state-default m-0 p-0 ${parentNodeId}" name="${nodeId}">
                              <div class="flexbox">         
                                 <div class="d-inline pl-2">
                                      ${arrowIcon}
@@ -58,10 +57,11 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren) {
                                      <i class="fas fa-arrows-alt"></i>
                                 <span>
                             </div>
-                             ${anotherList}
-                        </li>`;
+                            <ul id = "${nodeId}" class="sortable customUlist connectedSortable toggle"> 
+                            </ul >
+                            </li>`;
 
-    return htmlForAppend;
+    $(appendTo).append(htmlForAppend);
 }
 
 function SlideToggleList() {
@@ -83,6 +83,11 @@ function MarkAsActive() {
             $('input').blur();
         }
     });
+}
+
+function FocusOn(id) {
+    $(".Active").removeClass("Active")
+    $('[name=' + id + ']').addClass("Active");
 }
 
 function SortList() {
@@ -152,30 +157,55 @@ function ShowHideDragIcon() {
 }
 
 function AddNewNode() {
+    $(document).on("click", "#Add", (e) => {
 
-    $(document).on("click", "#Add", () => {
-
-        if (!$("input").hasClass("Active")) {
-
-            var listClass = ".wrap"
-
-            Add(listClass);
-
-
-
-        }
-        else {
-
-            var listId = "#" + $(".Active").attr('name');
-
-            SortingEngine(listId);
-
-
-        }
+        var appendTo = $("input").hasClass("Active") ? $(".Active").attr('name') : ".wrap";
+        AddNode(e, appendTo)
 
     });
 }
 
-function AddNode() {
+function AddNode(e, appendTo) {
 
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    var parentListId = appendTo;
+
+    $.ajax({
+        url: '/Home/AddNewNode',
+        method: 'POST',
+        //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        dataType: 'json',
+        data: {
+            //__RequestVerificationToken: token,
+            name: NameGenerator(1),
+            parentId: parentListId
+        },
+        success: (response) => {
+            if (response.success) {
+
+                var parentId = response.nodeParentId === null ? "" : response.nodeParentId;
+                GenerateHTML(response.nodeName, response.newNodeId, parentId, false, "#" + appendTo);
+                FocusOn(response.newNodeId);
+
+            } else {
+                alert('not success')
+            }
+        },
+        error: () => { alert('Something goes worng:(') }
+    });
+
+}
+
+function NameGenerator(count) {
+
+    var name = "New Node (" + count + ")"
+
+    if ($("input").val() === name)
+    {
+        generateName(count++);
+    }
+
+    return name;
 }

@@ -30,5 +30,29 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
 
             return nodes;
         }
+
+        public int AddNode(AddNodeVM addNode)
+        {
+            var node = new Node
+            {
+                Name = addNode.Name,
+                ParentNodeId = addNode.ParentNodeId
+            };
+
+            _appDbContext.Nodes.Add(node);
+            _appDbContext.SaveChanges();
+
+            return node.Id;
+        }
+
+        public void DeleteNode(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EditNode(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
