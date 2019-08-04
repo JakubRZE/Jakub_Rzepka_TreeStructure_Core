@@ -122,28 +122,37 @@ function SlideToggleList() {
     });
 }
 
-function SortList() {
-    $(document).on("click", "#Sort", () => {
-        var listId = "#" + $(".Active").attr('name'); 
-        SortingEngine(listId);
-        $(listId).toggleClass('desc');
-});
-}
-
-function ShowHideLists() {
-    $(document).on("click", "#Roll", (e) => {
-        if (!$(e.target).hasClass("clicked")) {
-                $(e.target).addClass("clicked");
-                $("ul:not(.wrap)").slideUp();
-                $(".fa-caret-down").addClass("flip");
+function MarkAsActive() {
+    $(document).on("click", "input", (e) => {
+        if (!$(e.target).hasClass("Active")) {
+            $(".Active").removeClass("Active")
+            $(e.target).addClass("Active");
         }
         else {
-            $(e.target).removeClass("clicked");
-            $("ul:not(.wrap)").slideDown();
-            $(".fa-caret-down").removeClass("flip");
+            $(".Active").removeClass("Active")
+            $('input').blur();
         }
     });
 }
+
+function SortList() {
+    $(document).on("click", "#Sort", () => {
+        if (!$("input").hasClass("Active"))
+        {
+            var listClass =".wrap"
+            SortingEngine(listClass);
+            $(listClass).toggleClass('desc');
+        }
+        else
+        {
+            var listId = "#" + $(".Active").attr('name');
+            SortingEngine(listId);
+            $(listId).toggleClass('desc');
+        }
+
+    });
+}
+
 
 function SortingEngine(listId) {
     $(listId).html(
@@ -159,6 +168,23 @@ function SortingEngine(listId) {
         })
     );
 
+}
+
+function ShowHideLists() {
+    $(document).on("click", "#Roll", (e) => {
+        if (!$(e.target).hasClass("clicked")) {
+            $(e.target).addClass("clicked");
+            $("ul:not(.wrap)").slideUp();
+            $(".fa-caret-down").addClass("flip");
+            $("#Roll").addClass("flip-1");
+        }
+        else {
+            $(e.target).removeClass("clicked");
+            $("ul:not(.wrap)").slideDown();
+            $(".fa-caret-down").removeClass("flip");
+            $("#Roll").removeClass("flip-1");
+        }
+    });
 }
 
 function MakeListSortable() {
@@ -178,15 +204,3 @@ function ShowHideDragIcon() {
     });
 }
 
-function MarkAsActive() {
-    $(document).on("click", "input", (e) => {
-        if (!$(e.target).hasClass("Active")) {
-            $(".Active").removeClass("Active")
-            $(e.target).addClass("Active");
-        }
-        else {
-            $(".Active").removeClass("Active")
-            $('input').blur();
-        }
-    });
-}
