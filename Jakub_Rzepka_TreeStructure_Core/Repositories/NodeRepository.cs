@@ -55,7 +55,8 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
         public void EditNode(NodeVM nodeVM)
         {
             Node node = _appDbContext.Nodes.Find(nodeVM.Id);
-            node.Name = nodeVM.Name;
+            if (nodeVM.Name != null) node.Name = nodeVM.Name;
+            if (nodeVM.ParentNodeId != null) node.ParentNodeId = nodeVM.ParentNodeId;
 
             _appDbContext.Update(node);
             _appDbContext.SaveChanges();

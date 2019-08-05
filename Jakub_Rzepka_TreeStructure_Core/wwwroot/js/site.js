@@ -1,7 +1,7 @@
 ﻿$(document).ready(() => {
 
     loadData();
-    
+
 });
 
 function loadData() {
@@ -22,9 +22,13 @@ function loadData() {
             ShowHideDragIcon();
             MarkAsActive();
             ShowHideLists();
+            InputFocusOut();
 
             AddNewNode();
             DeleteNode();
+            EditeNodeButton();
+            submitEditButton();
+            
 
         },
         error: (xhr, ajaxOptions, thrownError) => {
@@ -144,7 +148,18 @@ function ShowHideLists() {
 
 function MakeListSortable() {
     $(".sortable").sortable({
+        //disabled: true
         connectWith: ".connectedSortable",
+        containment: ".wrap",
+        revert: true,
+        update: (event, ui) => {
+
+            var nodeId = ui.item.attr('name');
+            var parentId = ui.item.parent().attr('id');
+            Edit("", nodeId, parentId);
+
+        }
+
     }).disableSelection();
 }
 
@@ -152,10 +167,6 @@ function ShowHideDragIcon() {
     $(document).on("click", "input", (e) => {
         var inputName = e.target.getAttribute('name');
         $('[name=drag' + inputName + ']').show();
-
-        $(e.target).focusout(() => {
-            $('[name=drag' + inputName + ']').hide();
-        })
     });
 }
 
@@ -163,6 +174,7 @@ function AddNewNode() {
     $(document).on("click", "#Add", (e) => {
 
         var appendTo = $("input").hasClass("Active") ? $(".Active").attr('name') : ".wrap";
+        $("#Add").addClass("disabled");
         AddNode(e, appendTo)
 
     });
@@ -195,6 +207,10 @@ function AddNode(e, appendTo) {
                 $("#Edit, #Del").removeClass("disabled");
                 FocusOn(response.newNodeId);
 
+                $("#Add").removeClass("disabled");
+
+                $(".selector").sortable("refresh");
+
             } else {
                 alert('not success')
             }
@@ -208,8 +224,7 @@ function NameGenerator(count) {
 
     var name = "New Node (" + count + ")"
 
-    if ($("input").val() === name)
-    {
+    if ($("input").val() === name) {
         generateName(count++);
     }
 
@@ -219,18 +234,16 @@ function NameGenerator(count) {
 function DeleteNode() {
     $(document).on("click", "#Del", (e) => {
 
-        if ($("input").hasClass("Active"))
-        {
+        if ($("input").hasClass("Active")) {
             var nodeId = $(".Active").attr('name');
             Delete(e, nodeId)
         }
-      
+
 
     });
 }
 
-function Delete(e, nodeId)
-{
+function Delete(e, nodeId) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
@@ -257,3 +270,97 @@ function Delete(e, nodeId)
         error: () => { alert('Something goes worng:(') }
     });
 }
+
+function EditeNodeButton() {
+    $(document).on("click", "#Edit", (e) => {
+
+        var nodeId = $(".Active").attr('name');
+        var inputName = "input[name='" + nodeId + "']";
+
+        $(inputName).attr("readonly", false);
+        $(inputName).select();
+
+        $("#Edit").hide();
+        $("#SubmitEdit").show();
+
+        $(inputName).focus();
+    });
+
+}
+
+function submitEditButton() {
+    $(document).on("click", "#SubmitEdit", submitButtonHandler);
+}
+
+
+function submitButtonHandler() {
+    var nodeId = $(".Active").attr('name');
+    var inputName = "input[name='" + nodeId + "']";
+
+    if ($(inputName).val()) {
+        $(inputName).attr("readonly", true);
+        $("#SubmitEdit").hide();
+        $("#Edit").show();
+        var newName = $(inputName).val();
+        Edit(newName, nodeId, null);
+    }
+
+}
+
+
+
+function Edit(newName, nodeId, parentId) {
+
+    $.ajax({
+        url: '/Home/EditNode',
+        method: 'POST',
+        //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        dataType: 'json',
+        data: {
+            //__RequestVerificationToken: token,
+            name: newName,
+            id: nodeId,
+            parentId: parentId
+        },
+        success: (response) => {
+            if (response.success) {
+
+                if (response.success) {
+                    $("[name = '" + response.nodeId + "']").effect("highlight", { color: '#02d402' });
+                } else {
+                    $("[name = '" + response.nodeId + "']").effect("highlight", { color: '#ff4207' });
+                }
+
+            } else {
+                alert('not success')
+            }
+        },
+        error: () => { alert('Something goes worng:(') }
+    });
+}
+
+function InputFocusOut() {
+    $(".customInput").focusout((e) => {
+
+        if ($(e.target).attr("readonly") === 'readonly')
+        {
+            var inputName = e.target.getAttribute('name');
+            $('[name=drag' + inputName + ']').hide();
+            return;
+        }
+
+        if ($(e.target).val()) submitButtonHandler();
+        else
+        {
+            $(e.target).effect("highlight", { color: '#ff4207' }).focus();
+            $(e.target).attr("readonly", true);
+            $("#SubmitEdit").hide();
+            $("#Edit").show();
+            $(e.target).val($(e.target).attr('value'));
+        }
+
+    });
+}
+
+
+

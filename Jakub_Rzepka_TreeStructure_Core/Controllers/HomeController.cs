@@ -52,12 +52,13 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
         }
 
         [HttpPost]
-        public JsonResult EditNode(string name, int id)
+        public JsonResult EditNode(string name, int id, int? parentId)
         {
             _nodeRepository.EditNode(new NodeVM
             {
                 Id = id,
-                Name = name
+                Name = name,
+                ParentNodeId = parentId
             });
             return Json(new { success = true, nodeId = id });
         }
