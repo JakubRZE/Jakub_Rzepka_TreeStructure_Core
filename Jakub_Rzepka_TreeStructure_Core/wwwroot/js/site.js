@@ -1,10 +1,12 @@
 ﻿$(document).ready(() => {
 
-    loadData();
+    var token = $('input[name="__RequestVerificationToken"]').val();
+
+    loadData(token);
 
 });
 
-function loadData() {
+function loadData(token) {
 
     jQuery('.wrap').empty();
 
@@ -16,18 +18,18 @@ function loadData() {
 
             treeBuilder(null, data);
 
-            MakeListSortable();
+            MakeListSortable(token);
             SlideToggleList();
             SortList();
             ShowHideDragIcon();
             MarkAsActive();
             ShowHideLists();
-            InputFocusOut();
+            InputFocusOut(token);
 
-            AddNewNode();
-            DeleteNode();
-            EditeNodeButton();
-            submitEditButton();
+            AddNewNode(token);
+            DeleteNode(token);
+            EditeNodeButton(token);
+            submitEditButton(token);
             
 
         },
@@ -88,6 +90,7 @@ function MarkAsActive() {
             $(".Active").removeClass("Active")
             $('input').blur();
             $("#Edit, #Del").addClass("disabled")
+            $(".movable").hide();
         }
     });
 }
@@ -136,17 +139,21 @@ function ShowHideLists() {
             $("ul:not(.wrap)").slideUp();
             $(".fa-caret-down").addClass("flip");
             $("#Roll").addClass("flip-1");
+            $(".customInput").removeClass("Active");
+            $(".movable").hide();
         }
         else {
             $(e.target).removeClass("clicked");
             $("ul:not(.wrap)").slideDown();
             $(".fa-caret-down").removeClass("flip");
             $("#Roll").removeClass("flip-1");
+            $(".customInput").removeClass("Active");
+            $(".movable").hide();
         }
     });
 }
 
-function MakeListSortable() {
+function MakeListSortable(token) {
     $(".sortable").sortable({
         //disabled: true
         connectWith: ".connectedSortable",
@@ -156,7 +163,7 @@ function MakeListSortable() {
 
             var nodeId = ui.item.attr('name');
             var parentId = ui.item.parent().attr('id');
-            Edit("", nodeId, parentId);
+            Edit(token, "", nodeId, parentId);
 
         }
 
@@ -170,17 +177,17 @@ function ShowHideDragIcon() {
     });
 }
 
-function AddNewNode() {
+function AddNewNode(token) {
     $(document).on("click", "#Add", (e) => {
 
         var appendTo = $("input").hasClass("Active") ? $(".Active").attr('name') : ".wrap";
         $("#Add").addClass("disabled");
-        AddNode(e, appendTo)
+        AddNode(token, e, appendTo)
 
     });
 }
 
-function AddNode(e, appendTo) {
+function AddNode(token,e, appendTo) {
 
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -190,10 +197,10 @@ function AddNode(e, appendTo) {
     $.ajax({
         url: '/Home/AddNewNode',
         method: 'POST',
-        //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8',
         dataType: 'json',
         data: {
-            //__RequestVerificationToken: token,
+            __RequestVerificationToken: token,
             name: NameGenerator(1),
             parentId: parentListId
         },
@@ -222,7 +229,7 @@ function AddNode(e, appendTo) {
 
 function NameGenerator(count) {
 
-    var name = "New Node (" + count + ")"
+    var name = " New Node (" + count + ")"
 
     if ($("input").val() === name) {
         generateName(count++);
@@ -231,30 +238,30 @@ function NameGenerator(count) {
     return name;
 }
 
-function DeleteNode() {
+function DeleteNode(token) {
     $(document).on("click", "#Del", (e) => {
 
         if ($("input").hasClass("Active")) {
             var nodeId = $(".Active").attr('name');
-            Delete(e, nodeId)
+            Delete(token, e, nodeId)
         }
 
 
     });
 }
 
-function Delete(e, nodeId) {
+function Delete(token, e, nodeId) {
+
     e.preventDefault();
     e.stopImmediatePropagation();
-
 
     $.ajax({
         url: '/Home/DeleteNode',
         method: 'POST',
-        //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8',
         dataType: 'json',
         data: {
-            //__RequestVerificationToken: token,
+            __RequestVerificationToken: token,
             id: nodeId
         },
         success: (response) => {
@@ -262,6 +269,7 @@ function Delete(e, nodeId) {
 
                 $('li[name=' + nodeId + ']').remove();
                 $("#Edit, #Del").addClass("disabled");
+                $(".movable").hide();
 
             } else {
                 alert('not success')
@@ -283,6 +291,8 @@ function EditeNodeButton() {
         $("#Edit").hide();
         $("#SubmitEdit").show();
 
+        $("#Add, #Del").addClass("disabled")
+
         $(inputName).focus();
     });
 
@@ -292,8 +302,7 @@ function submitEditButton() {
     $(document).on("click", "#SubmitEdit", submitButtonHandler);
 }
 
-
-function submitButtonHandler() {
+function submitButtonHandler(token) {
     var nodeId = $(".Active").attr('name');
     var inputName = "input[name='" + nodeId + "']";
 
@@ -302,22 +311,20 @@ function submitButtonHandler() {
         $("#SubmitEdit").hide();
         $("#Edit").show();
         var newName = $(inputName).val();
-        Edit(newName, nodeId, null);
+        Edit(token, newName, nodeId, null);
     }
 
 }
 
-
-
-function Edit(newName, nodeId, parentId) {
+function Edit(token, newName, nodeId, parentId) {
 
     $.ajax({
         url: '/Home/EditNode',
         method: 'POST',
-        //contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8',
         dataType: 'json',
         data: {
-            //__RequestVerificationToken: token,
+            __RequestVerificationToken: token,
             name: newName,
             id: nodeId,
             parentId: parentId
@@ -327,6 +334,8 @@ function Edit(newName, nodeId, parentId) {
 
                 if (response.success) {
                     $("[name = '" + response.nodeId + "']").effect("highlight", { color: '#02d402' });
+                    $("#Add, #Del").removeClass("disabled")
+                    $(".movable").hide();
                 } else {
                     $("[name = '" + response.nodeId + "']").effect("highlight", { color: '#ff4207' });
                 }
@@ -339,17 +348,19 @@ function Edit(newName, nodeId, parentId) {
     });
 }
 
-function InputFocusOut() {
+function InputFocusOut(token) {
     $(".customInput").focusout((e) => {
 
         if ($(e.target).attr("readonly") === 'readonly')
         {
             var inputName = e.target.getAttribute('name');
             $('[name=drag' + inputName + ']').hide();
+            $(".movable").hide();
+            $("#Add, #Del").removeClass("disabled")
             return;
         }
 
-        if ($(e.target).val()) submitButtonHandler();
+        if ($(e.target).val()) submitButtonHandler(token);
         else
         {
             $(e.target).effect("highlight", { color: '#ff4207' }).focus();
@@ -357,6 +368,8 @@ function InputFocusOut() {
             $("#SubmitEdit").hide();
             $("#Edit").show();
             $(e.target).val($(e.target).attr('value'));
+            $(".movable").hide();
+            $("#Add, #Del").removeClass("disabled")
         }
 
     });

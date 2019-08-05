@@ -33,6 +33,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult AddNewNode(string name, int? parentId)
         {
             var newNodeId = _nodeRepository.AddNode(new NodeVM
@@ -45,6 +46,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult DeleteNode(int id)
         {
             _nodeRepository.DeleteNode(id);
@@ -52,6 +54,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public JsonResult EditNode(string name, int id, int? parentId)
         {
             _nodeRepository.EditNode(new NodeVM
