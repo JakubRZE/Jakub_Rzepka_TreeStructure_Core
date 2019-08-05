@@ -30,7 +30,9 @@ function loadData(token) {
             DeleteNode(token);
             EditeNodeButton(token);
             submitEditButton(token);
-            
+
+            addArrow();
+
 
         },
         error: (xhr, ajaxOptions, thrownError) => {
@@ -56,7 +58,7 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
 
     var htmlForAppend = `<li class="ui-state-default m-0 p-0 ${parentNodeId}" name="${nodeId}">
                              <div class="flexbox">         
-                                <div class="d-inline pl-2">
+                                <div class="d-inline pl-2 ${nodeId}">
                                      ${arrowIcon}
                                 </div>
                                 <input class="w-100 customInput" name="${nodeId}" value="${nodeName}" readonly="">
@@ -157,7 +159,7 @@ function MakeListSortable(token) {
     $(".sortable").sortable({
         //disabled: true
         connectWith: ".connectedSortable",
-        containment: ".wrap",
+        //containment: ".wrap",
         revert: true,
         update: (event, ui) => {
 
@@ -165,10 +167,23 @@ function MakeListSortable(token) {
             var parentId = ui.item.parent().attr('id');
             Edit(token, "", nodeId, parentId);
 
-        }
+            //if ($("#" + nodeId + " li").size() < 1) {
+            //    $("div." + nodeId + "").empty();
+            //    $("div." + nodeId + "").children().remove();
+            //}
 
+            //if ($("#"+parentId).length >= 1) {
+            //    var arrowIcon = `<i class="fas fa-caret-down text-center arrowIcon" name="${nodeId}"></i>`;
+            //    $("[name=" + nodeId+ "] .flexbox:first-child").append(arrowIcon);
+            //}
+
+        }
     }).disableSelection();
 }
+
+
+
+
 
 function ShowHideDragIcon() {
     $(document).on("click", "input", (e) => {
@@ -187,7 +202,7 @@ function AddNewNode(token) {
     });
 }
 
-function AddNode(token,e, appendTo) {
+function AddNode(token, e, appendTo) {
 
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -215,7 +230,6 @@ function AddNode(token,e, appendTo) {
                 FocusOn(response.newNodeId);
 
                 $("#Add").removeClass("disabled");
-
                 $(".selector").sortable("refresh");
 
             } else {
@@ -229,7 +243,7 @@ function AddNode(token,e, appendTo) {
 
 function NameGenerator(count) {
 
-    var name = " New Node (" + count + ")"
+    var name = "New Node (" + count + ")"
 
     if ($("input").val() === name) {
         generateName(count++);
@@ -240,13 +254,10 @@ function NameGenerator(count) {
 
 function DeleteNode(token) {
     $(document).on("click", "#Del", (e) => {
-
         if ($("input").hasClass("Active")) {
             var nodeId = $(".Active").attr('name');
             Delete(token, e, nodeId)
         }
-
-
     });
 }
 
@@ -290,12 +301,10 @@ function EditeNodeButton() {
 
         $("#Edit").hide();
         $("#SubmitEdit").show();
-
         $("#Add, #Del").addClass("disabled")
 
         $(inputName).focus();
     });
-
 }
 
 function submitEditButton() {
@@ -313,7 +322,6 @@ function submitButtonHandler(token) {
         var newName = $(inputName).val();
         Edit(token, newName, nodeId, null);
     }
-
 }
 
 function Edit(token, newName, nodeId, parentId) {
@@ -351,8 +359,7 @@ function Edit(token, newName, nodeId, parentId) {
 function InputFocusOut(token) {
     $(".customInput").focusout((e) => {
 
-        if ($(e.target).attr("readonly") === 'readonly')
-        {
+        if ($(e.target).attr("readonly") === 'readonly') {
             var inputName = e.target.getAttribute('name');
             $('[name=drag' + inputName + ']').hide();
             $(".movable").hide();
@@ -361,8 +368,7 @@ function InputFocusOut(token) {
         }
 
         if ($(e.target).val()) submitButtonHandler(token);
-        else
-        {
+        else {
             $(e.target).effect("highlight", { color: '#ff4207' }).focus();
             $(e.target).attr("readonly", true);
             $("#SubmitEdit").hide();
@@ -375,5 +381,32 @@ function InputFocusOut(token) {
     });
 }
 
+function addArrow() {
+    $(document).on("click", "body", (e) => {
+        addArrowHandler(e);
+    });
+}
+
+function addArrowHandler(e) {
+    //if ($(e.target).length < 1) {
+    //    $(".arrowIcon[name = " + e.target.getAttribute('id') + "]").remove();
+    //}
+
+    //$("ul").each(() => {
+
+    //    if ($(this).length-1 < 1) {
+    //        var id = $(this).Attr('id');
+
+    //        $("div." + id + "").empty();
+    //        $("div." + id + "").children().remove();
+    //    }
+
+    //});
 
 
+
+    //$("ul").append("<li>" +
+    //    ($("ul").has("li").length ? "Yes" : "No") +
+    //    "</li>");
+    //$("ul").has("li").addClass("full");
+}
