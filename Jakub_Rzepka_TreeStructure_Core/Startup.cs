@@ -46,6 +46,7 @@ namespace Jakub_Rzepka_TreeStructure_Core
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

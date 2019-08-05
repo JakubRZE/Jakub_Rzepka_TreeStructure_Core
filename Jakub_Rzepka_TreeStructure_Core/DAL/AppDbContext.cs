@@ -1,4 +1,6 @@
 ﻿using Jakub_Rzepka_TreeStructure_Core.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Jakub_Rzepka_TreeStructure_Core.DAL
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<IdentityUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -24,6 +26,8 @@ namespace Jakub_Rzepka_TreeStructure_Core.DAL
             .HasMany(n => n.SubNodes)
             .WithOne(n => n.ParentNode)
             .HasForeignKey(n => n.ParentNodeId);
+
+            //.OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
