@@ -86,12 +86,12 @@ function MarkAsActive() {
         if (!$(e.target).hasClass("Active")) {
             $(".Active").removeClass("Active")
             $(e.target).addClass("Active");
-            $("#Edit, #Del").removeClass("disabled")
+            $("#Edit, #Del, #Move").removeClass("disabled")
         }
         else {
             $(".Active").removeClass("Active")
             $('input').blur();
-            $("#Edit, #Del").addClass("disabled")
+            $("#Edit, #Del, #Move").addClass("disabled")
             $(".movable").hide();
         }
     });
@@ -138,18 +138,20 @@ function ShowHideLists() {
     $(document).on("click", "#Roll", (e) => {
         if (!$(e.target).hasClass("clicked")) {
             $(e.target).addClass("clicked");
-            $("ul:not(.wrap)").slideUp();
+            $("ul:not(.wrap, .navbar-nav)").slideUp();
             $(".fa-caret-down").addClass("flip");
             $("#Roll").addClass("flip-1");
             $(".customInput").removeClass("Active");
+            $("#Edit, #Del, #Move").addClass("disabled")
             $(".movable").hide();
         }
         else {
             $(e.target).removeClass("clicked");
-            $("ul:not(.wrap)").slideDown();
+            $("ul:not(.wrap, .navbar-nav)").slideDown();
             $(".fa-caret-down").removeClass("flip");
             $("#Roll").removeClass("flip-1");
             $(".customInput").removeClass("Active");
+            $("#Edit, #Del, #Move").addClass("disabled")
             $(".movable").hide();
         }
     });
@@ -157,9 +159,9 @@ function ShowHideLists() {
 
 function MakeListSortable(token) {
     $(".sortable").sortable({
-        //disabled: true
+        disabled: true,
         connectWith: ".connectedSortable",
-        //containment: ".wrap",
+        containment: ".wrap",
         revert: true,
         update: (event, ui) => {
 
@@ -182,14 +184,11 @@ function MakeListSortable(token) {
 }
 
 
-
-
-
 function ShowHideDragIcon() {
-    $(document).on("click", "input", (e) => {
-        var inputName = e.target.getAttribute('name');
-        $('[name=drag' + inputName + ']').show();
-    });
+    //$(document).on("click", "input", (e) => {
+    //    var inputName = e.target.getAttribute('name');
+    //    $('[name=drag' + inputName + ']').show();
+    //});
 }
 
 function AddNewNode(token) {
@@ -226,7 +225,7 @@ function AddNode(token, e, appendTo) {
                 if (appendTo !== ".wrap") appendTo = "#" + appendTo;
 
                 GenerateHTML(response.nodeName, response.newNodeId, parentId, false, appendTo);
-                $("#Edit, #Del").removeClass("disabled");
+                $("#Edit, #Del, #Move").removeClass("disabled");
                 FocusOn(response.newNodeId);
 
                 $("#Add").removeClass("disabled");
@@ -279,7 +278,7 @@ function Delete(token, e, nodeId) {
             if (response.success) {
 
                 $('li[name=' + nodeId + ']').remove();
-                $("#Edit, #Del").addClass("disabled");
+                $("#Edit, #Del, #Move").addClass("disabled");
                 $(".movable").hide();
 
             } else {
@@ -301,7 +300,7 @@ function EditeNodeButton() {
 
         $("#Edit").hide();
         $("#SubmitEdit").show();
-        $("#Add, #Del").addClass("disabled")
+        $("#Add, #Del, #Move").addClass("disabled")
 
         $(inputName).focus();
     });
@@ -341,11 +340,11 @@ function Edit(token, newName, nodeId, parentId) {
             if (response.success) {
 
                 if (response.success) {
-                    $("[name = '" + response.nodeId + "']").effect("highlight", { color: '#02d402' });
-                    $("#Add, #Del").removeClass("disabled")
+                    $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#02d402' });
+                    $("#Add, #Del, #Move").removeClass("disabled")
                     $(".movable").hide();
                 } else {
-                    $("[name = '" + response.nodeId + "']").effect("highlight", { color: '#ff4207' });
+                    $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#ff4207' });
                 }
 
             } else {
@@ -363,7 +362,7 @@ function InputFocusOut(token) {
             var inputName = e.target.getAttribute('name');
             $('[name=drag' + inputName + ']').hide();
             $(".movable").hide();
-            $("#Add, #Del").removeClass("disabled")
+            $("#Add, #Del, #Move").removeClass("disabled")
             return;
         }
 
@@ -375,16 +374,16 @@ function InputFocusOut(token) {
             $("#Edit").show();
             $(e.target).val($(e.target).attr('value'));
             $(".movable").hide();
-            $("#Add, #Del").removeClass("disabled")
+            $("#Add, #Del #Move").removeClass("disabled")
         }
 
     });
 }
 
 function addArrow() {
-    $(document).on("click", "body", (e) => {
-        addArrowHandler(e);
-    });
+    //$(document).on("click", "body", (e) => {
+    //    addArrowHandler(e);
+    //});
 }
 
 function addArrowHandler(e) {

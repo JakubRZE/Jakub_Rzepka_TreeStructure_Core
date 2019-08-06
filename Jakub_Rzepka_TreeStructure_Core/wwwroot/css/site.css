@@ -50,7 +50,7 @@ body {
 
 .scroll {
     overflow: auto;
-    height: 500px;
+    height: 480px;
 }
 
 .footer {
@@ -101,7 +101,18 @@ body {
     align-content: center;
 }
 
-.customInput {
+.mdb-select {
+    outline: none;
+    box-shadow: none;
+    border: none;
+}
+    .mdb-select:focus {
+        box-shadow: none;
+        outline: none;
+        border: none;
+    }
+
+    .customInput {
     padding: 0;
     margin: 0;
     border: none;
