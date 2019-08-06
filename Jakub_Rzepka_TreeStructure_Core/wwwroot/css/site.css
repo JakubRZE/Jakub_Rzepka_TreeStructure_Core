@@ -101,24 +101,13 @@ body {
     align-content: center;
 }
 
-.select {
-    outline: none;
-    box-shadow: none;
+.space {
+    padding: 0;
+    margin: 0;
     border: none;
-    height: auto;
-    font-size: 14px;
+    height: 16px;
+    width: auto;
 }
-
-    .select:focus {
-        box-shadow: none;
-        outline: none;
-        border-right: 1px solid #ffc619 !important;
-    }
-
-input#search::-webkit-input-placeholder {
-    color: #cecccc;
-}
-
 
 .customInput {
     padding: 0;

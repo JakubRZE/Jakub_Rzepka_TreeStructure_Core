@@ -64,6 +64,7 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
                                 <span>
                             </div>
                             <ul id = "${nodeId}" class="sortable connectedSortable customUlist toggle"> 
+                                <li class="space ${nodeId}" style="display:none;"></li>
                             </ul >
                             </li>`;
 
@@ -118,14 +119,14 @@ function SortList() {
 
 function SortingEngine(listId) {
     $(listId).html(
-        $(listId).children("li").sort(function (a, b) {
+        $(listId).children("li.ui-state-default").sort(function (a, b) {
             if (!$(listId).hasClass("desc")) {
-                return $(a).text().toUpperCase().localeCompare(
-                    $(b).text().toUpperCase());
+                return $(a).find("div>input").val().toUpperCase().localeCompare(
+                    $(b).find("div>input").val().toUpperCase());
             }
             else {
-                return -$(a).text().toUpperCase().localeCompare(
-                    $(b).text().toUpperCase());
+                return -$(a).find("div>input").val().toUpperCase().localeCompare(
+                    $(b).find("div>input").val().toUpperCase());
             }
         })
     );
@@ -158,7 +159,7 @@ function ShowHideLists() {
 function MakeListSortable(token) {
     $(".sortable").sortable({
         disabled: false,
-        tolerance: 'pointer',
+        //tolerance: 'pointer',
         items: 'li',
         connectWith: ".connectedSortable",
         containment: ".scroll",
@@ -169,6 +170,7 @@ function MakeListSortable(token) {
             ////////////send edit to db
             var nodeId = ui.item.attr('name');
             var parentId = ui.item.parent().attr('id');
+
             Edit(token, "", nodeId, parentId);
 
 
@@ -189,13 +191,13 @@ function MakeListSortable(token) {
 
                 orderArray.push(order);
             });
-        
+
             ////send datas to controller ----------------
             $.ajax({
                 url: "/Home/SortNode",
                 type: 'POST',
                 data: {
-                    sortVm : orderArray
+                    sortVm: orderArray
                 },
                 success: function (data) {
                     alert("git");
@@ -205,15 +207,18 @@ function MakeListSortable(token) {
             //////////////////////////////////////
 
 
-            // if ul left empty delete arrow      
+    
             deleteArrow(ui.item.attr('id'))
+            addArrow(parentId);
 
             ui.item.attr('id', "P" + parentId);
         },
         start: (event, ui) => {
-
-            
-
+            var liId = ui.item.attr('name');
+            $(".space:not(." + liId + ")").show();
+        },
+        stop: (event, ui) => {
+            $(".space").hide();
         }
     }).disableSelection();
 }
@@ -237,7 +242,6 @@ function AddNewNode(token) {
 }
 
 function AddNode(token, e, appendTo) {
-
     e.preventDefault();
     e.stopImmediatePropagation();
 
@@ -260,14 +264,7 @@ function AddNode(token, e, appendTo) {
                 if (appendTo !== ".wrap") appendTo = "#" + appendTo;
 
                 GenerateHTML(response.nodeName, response.newNodeId, parentId, false, appendTo);
-
-                //add arrow
-                if (!$("div." + parentId + "").children().length > 0 && parentId !== null)
-                {
-                    var html = `<i class="fas fa-caret-down text-center arrowIcon" name="${parentId}"></i>`;
-                    $("div." + parentId + "").append(html);
-                }
-
+                addArrow(parentId);
 
                 $("#Edit, #Del, #Move").removeClass("disabled");
                 FocusOn(response.newNodeId);
@@ -282,6 +279,13 @@ function AddNode(token, e, appendTo) {
         error: () => { alert('Something goes worng:(') }
     });
 
+}
+
+function addArrow(parentId) {
+    if (!$("div." + parentId + "").children().length > 0 && parentId !== null) {
+        var html = `<i class="fas fa-caret-down text-center arrowIcon" name="${parentId}"></i>`;
+        $("div." + parentId + "").append(html);
+    }
 }
 
 function NameGenerator() {
@@ -322,7 +326,7 @@ function Delete(token, e, nodeId) {
         success: (response) => {
             if (response.success) {
 
-               
+
                 $("#Edit, #Del, #Move").addClass("disabled");
                 $(".movable").hide();
 
@@ -405,7 +409,7 @@ function Edit(token, newName, nodeId, parentId) {
 }
 
 function InputFocusOut(token) {
-    $(document).on("focusout", ".customInput",(e) => {
+    $(document).on("focusout", ".customInput", (e) => {
 
         if ($(e.target).attr("readonly") === 'readonly') {
             var inputName = e.target.getAttribute('name');
@@ -429,49 +433,13 @@ function InputFocusOut(token) {
     });
 }
 
-function deleteArrow(id)
-{
+function deleteArrow(id) {
     if (!id.includes("null")) {
         var oldParentId = id.slice(1);
         var count = $("#" + oldParentId + " li").length;
-        if (count < 1) {
+        if (count <= 1) {
             $("div." + oldParentId + "").children().remove();
         }
     }
 }
 
-
-
-
-
-
-
-//function SearchForUsers() {
-//    $(".customSearch").on("click", (e) => {
-//        $("#searchForm").submit();
-//        e.preventDefault();
-//    });
-//}
-
-//function search(event) {
-
-//    event.preventDefault();
-//    event.stopImmediatePropagation();
-
-//    !users.length && $.ajax({
-//        url: '/Home/GetUsers',
-//        method: 'GET',
-//        dataType: 'json',
-//        success: (response) => {
-//            users = response;
-
-//            $("#searchInput").autocomplete({
-//                source: users
-//            });
-
-//        },
-//        error: () => {
-//            alert("Lipa");
-//        }
-//    });
-//};
