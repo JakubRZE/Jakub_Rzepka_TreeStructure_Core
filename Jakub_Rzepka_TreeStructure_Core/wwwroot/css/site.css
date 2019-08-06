@@ -101,20 +101,29 @@ body {
     align-content: center;
 }
 
-.mdb-select {
+.select {
     outline: none;
     box-shadow: none;
     border: none;
+    height: auto;
+    font-size: 14px;
 }
-    .mdb-select:focus {
+
+    .select:focus {
         box-shadow: none;
         outline: none;
-        border: none;
+        border-right: 1px solid #ffc619 !important;
     }
 
-    .customInput {
+input#search::-webkit-input-placeholder {
+    color: #cecccc;
+}
+
+
+.customInput {
     padding: 0;
     margin: 0;
+    margin-left: 5px;
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -161,3 +170,17 @@ body {
     color: #cecccc;
     pointer-events: none;
 }
+
+.ui-state-highlight {
+    height: 1.5em;
+    line-height: 1.2em;
+    width: 100%;
+    background-color: #ffe8a4;
+    z-index: 10;
+}
+
+.ui-state-default {
+    margin: 0;
+    padding: 0;
+}
+

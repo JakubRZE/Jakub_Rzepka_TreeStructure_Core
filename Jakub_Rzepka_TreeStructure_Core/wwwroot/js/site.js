@@ -31,9 +31,6 @@ function loadData(token) {
             EditeNodeButton(token);
             submitEditButton(token);
 
-            addArrow();
-
-
         },
         error: (xhr, ajaxOptions, thrownError) => {
             alert(xhr.status);
@@ -56,9 +53,9 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
 
     var arrowIcon = hasChildren ? `<i class="fas fa-caret-down text-center arrowIcon" name="${nodeId}"></i>` : "";
 
-    var htmlForAppend = `<li class="ui-state-default m-0 p-0 ${parentNodeId}" name="${nodeId}">
+    var htmlForAppend = `<li class="ui-state-default" name="${nodeId}" id="P${parentNodeId}">
                              <div class="flexbox">         
-                                <div class="d-inline pl-2 ${nodeId}">
+                                <div class="d-inline ${nodeId}">
                                      ${arrowIcon}
                                 </div>
                                 <input class="w-100 customInput" name="${nodeId}" value="${nodeName}" readonly="">
@@ -66,7 +63,7 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
                                      <i class="fas fa-arrows-alt"></i>
                                 <span>
                             </div>
-                            <ul id = "${nodeId}" class="sortable customUlist connectedSortable toggle"> 
+                            <ul id = "${nodeId}" class="sortable connectedSortable customUlist toggle"> 
                             </ul >
                             </li>`;
 
@@ -76,13 +73,14 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
 function SlideToggleList() {
     $(document).on("click", ".arrowIcon", (e) => {
         var ulId = "#" + e.target.getAttribute('name');
+        $(".Active").removeClass("Active")
         $(ulId).slideToggle();
         $(e.target).toggleClass("flip");
     });
 }
 
 function MarkAsActive() {
-    $(document).on("click", "input", (e) => {
+    $(document).on("click", ".customInput", (e) => {
         if (!$(e.target).hasClass("Active")) {
             $(".Active").removeClass("Active")
             $(e.target).addClass("Active");
@@ -99,7 +97,7 @@ function MarkAsActive() {
 
 function FocusOn(id) {
     $(".Active").removeClass("Active")
-    $('[name=' + id + ']').addClass("Active");
+    $('input[name=' + id + ']').addClass("Active");
 }
 
 function SortList() {
@@ -159,25 +157,62 @@ function ShowHideLists() {
 
 function MakeListSortable(token) {
     $(".sortable").sortable({
-        disabled: true,
+        disabled: false,
+        tolerance: 'pointer',
+        items: 'li',
         connectWith: ".connectedSortable",
-        containment: ".wrap",
+        containment: ".scroll",
         revert: true,
+        placeholder: "ui-state-highlight",
         update: (event, ui) => {
 
+            ////////////send edit to db
             var nodeId = ui.item.attr('name');
             var parentId = ui.item.parent().attr('id');
             Edit(token, "", nodeId, parentId);
 
-            //if ($("#" + nodeId + " li").size() < 1) {
-            //    $("div." + nodeId + "").empty();
-            //    $("div." + nodeId + "").children().remove();
-            //}
 
-            //if ($("#"+parentId).length >= 1) {
-            //    var arrowIcon = `<i class="fas fa-caret-down text-center arrowIcon" name="${nodeId}"></i>`;
-            //    $("[name=" + nodeId+ "] .flexbox:first-child").append(arrowIcon);
-            //}
+            /////////////////////////////////// send order to db
+            var orderArray = [];
+
+            $("#" + parentId).children('li').each(function (i) {
+
+                var index = $(this).index();
+                var nodeId = $(this).attr('name');
+
+                var order =
+                {
+                    Index: index,
+                    NodeId: nodeId,
+                    ParentId: parentId
+                };
+
+                orderArray.push(order);
+            });
+        
+            ////send datas to controller ----------------
+            $.ajax({
+                url: "/Home/SortNode",
+                type: 'POST',
+                data: {
+                    sortVm : orderArray
+                },
+                success: function (data) {
+                    alert("git");
+                }
+
+            });
+            //////////////////////////////////////
+
+
+            // if ul left empty delete arrow      
+            deleteArrow(ui.item.attr('id'))
+
+            ui.item.attr('id', "P" + parentId);
+        },
+        start: (event, ui) => {
+
+            
 
         }
     }).disableSelection();
@@ -185,10 +220,10 @@ function MakeListSortable(token) {
 
 
 function ShowHideDragIcon() {
-    //$(document).on("click", "input", (e) => {
-    //    var inputName = e.target.getAttribute('name');
-    //    $('[name=drag' + inputName + ']').show();
-    //});
+    $(document).on("click", "input", (e) => {
+        var inputName = e.target.getAttribute('name');
+        $('[name=drag' + inputName + ']').show();
+    });
 }
 
 function AddNewNode(token) {
@@ -215,7 +250,7 @@ function AddNode(token, e, appendTo) {
         dataType: 'json',
         data: {
             __RequestVerificationToken: token,
-            name: NameGenerator(1),
+            name: NameGenerator(),
             parentId: parentListId
         },
         success: (response) => {
@@ -225,6 +260,15 @@ function AddNode(token, e, appendTo) {
                 if (appendTo !== ".wrap") appendTo = "#" + appendTo;
 
                 GenerateHTML(response.nodeName, response.newNodeId, parentId, false, appendTo);
+
+                //add arrow
+                if (!$("div." + parentId + "").children().length > 0 && parentId !== null)
+                {
+                    var html = `<i class="fas fa-caret-down text-center arrowIcon" name="${parentId}"></i>`;
+                    $("div." + parentId + "").append(html);
+                }
+
+
                 $("#Edit, #Del, #Move").removeClass("disabled");
                 FocusOn(response.newNodeId);
 
@@ -240,12 +284,13 @@ function AddNode(token, e, appendTo) {
 
 }
 
-function NameGenerator(count) {
+function NameGenerator() {
+    let count = 0;
 
-    var name = "New Node (" + count + ")"
+    var name = "New (" + count + ")"
 
-    if ($("input").val() === name) {
-        generateName(count++);
+    while ($(`.customInput:input[value="${name}"]`).length) {
+        name = "New (" + ++count + ")";
     }
 
     return name;
@@ -277,9 +322,13 @@ function Delete(token, e, nodeId) {
         success: (response) => {
             if (response.success) {
 
-                $('li[name=' + nodeId + ']').remove();
+               
                 $("#Edit, #Del, #Move").addClass("disabled");
                 $(".movable").hide();
+
+                var parentId = $("li[name=" + nodeId + "]").attr('id');
+                $('li[name=' + nodeId + ']').remove();
+                deleteArrow(parentId);
 
             } else {
                 alert('not success')
@@ -356,7 +405,7 @@ function Edit(token, newName, nodeId, parentId) {
 }
 
 function InputFocusOut(token) {
-    $(".customInput").focusout((e) => {
+    $(document).on("focusout", ".customInput",(e) => {
 
         if ($(e.target).attr("readonly") === 'readonly') {
             var inputName = e.target.getAttribute('name');
@@ -374,38 +423,55 @@ function InputFocusOut(token) {
             $("#Edit").show();
             $(e.target).val($(e.target).attr('value'));
             $(".movable").hide();
-            $("#Add, #Del #Move").removeClass("disabled")
+            $("#Add, #Del, #Move").removeClass("disabled")
         }
 
     });
 }
 
-function addArrow() {
-    //$(document).on("click", "body", (e) => {
-    //    addArrowHandler(e);
-    //});
+function deleteArrow(id)
+{
+    if (!id.includes("null")) {
+        var oldParentId = id.slice(1);
+        var count = $("#" + oldParentId + " li").length;
+        if (count < 1) {
+            $("div." + oldParentId + "").children().remove();
+        }
+    }
 }
 
-function addArrowHandler(e) {
-    //if ($(e.target).length < 1) {
-    //    $(".arrowIcon[name = " + e.target.getAttribute('id') + "]").remove();
-    //}
-
-    //$("ul").each(() => {
-
-    //    if ($(this).length-1 < 1) {
-    //        var id = $(this).Attr('id');
-
-    //        $("div." + id + "").empty();
-    //        $("div." + id + "").children().remove();
-    //    }
-
-    //});
 
 
 
-    //$("ul").append("<li>" +
-    //    ($("ul").has("li").length ? "Yes" : "No") +
-    //    "</li>");
-    //$("ul").has("li").addClass("full");
-}
+
+
+
+//function SearchForUsers() {
+//    $(".customSearch").on("click", (e) => {
+//        $("#searchForm").submit();
+//        e.preventDefault();
+//    });
+//}
+
+//function search(event) {
+
+//    event.preventDefault();
+//    event.stopImmediatePropagation();
+
+//    !users.length && $.ajax({
+//        url: '/Home/GetUsers',
+//        method: 'GET',
+//        dataType: 'json',
+//        success: (response) => {
+//            users = response;
+
+//            $("#searchInput").autocomplete({
+//                source: users
+//            });
+
+//        },
+//        error: () => {
+//            alert("Lipa");
+//        }
+//    });
+//};

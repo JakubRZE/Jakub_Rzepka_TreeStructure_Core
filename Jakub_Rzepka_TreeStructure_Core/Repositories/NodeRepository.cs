@@ -56,7 +56,11 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
         {
             Node node = _appDbContext.Nodes.Find(nodeVM.Id);
             if (nodeVM.Name != null) node.Name = nodeVM.Name;
-            if (nodeVM.ParentNodeId != null) node.ParentNodeId = nodeVM.ParentNodeId;
+            if (nodeVM.ParentNodeId != null)
+            {
+                if (nodeVM.ParentNodeId == 0) node.ParentNodeId = null;
+                else node.ParentNodeId = nodeVM.ParentNodeId;
+            }
 
             _appDbContext.Update(node);
             _appDbContext.SaveChanges();

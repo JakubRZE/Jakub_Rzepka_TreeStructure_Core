@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Jakub_Rzepka_TreeStructure_Core.Models;
 using Jakub_Rzepka_TreeStructure_Core.Repositories;
 using Jakub_Rzepka_TreeStructure_Core.ViewModels;
+using Newtonsoft.Json.Linq;
 
 namespace Jakub_Rzepka_TreeStructure_Core.Controllers
 {
@@ -64,6 +65,14 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
                 ParentNodeId = parentId
             });
             return Json(new { success = true, nodeId = id });
+        }
+
+        public JsonResult SortNode(List<SortVM> sortVm)
+        {
+
+            var order = sortVm;
+
+            return Json(new { success = true});
         }
     }
 }

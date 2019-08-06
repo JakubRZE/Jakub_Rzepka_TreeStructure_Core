@@ -24,12 +24,18 @@
         </div>
 
         <div class="input-group float-left  w-50 ml-3 ">
-            <select class="mdb-select md-form border-bottom w-50">
-                <option value="" disabled selected>Move element to...</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
-            </select>
+            @*<select class="mdb-select md-form border-bottom w-50">
+            <option value="" disabled selected>Move element to...</option>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+        </select>*@
+
+            <input id="search" class="form-control form-control-sm border-bottom select ui-autocomplete-input" 
+                   name="searchName" type="text" placeholder="Move selected element to..." autocomplete="off">
+
+
+
             <div class="input-group-append ">
                 <i id="Move" class="fas fa-check IcoBtn border-left disabled"></i>
             </div>
@@ -47,7 +53,7 @@
 <div class="row pt-4">
     <div class="col-12 pr-5 scroll">
         @Html.AntiForgeryToken()
-        <ul class="wrap sortable customUlist connectedSortable">
+        <ul id="0" class="wrap sortable customUlist connectedSortable">
 
             @*js body*@
 
