@@ -177,7 +177,7 @@ function MakeListSortable(token) {
             /////////////////////////////////// send order to db
             var orderArray = [];
 
-            $("#" + parentId).children('li').each(function (i) {
+            $("#" + parentId).children('li:not(.space)').each(function (i) {
 
                 var index = $(this).index();
                 var nodeId = $(this).attr('name');
@@ -282,7 +282,8 @@ function AddNode(token, e, appendTo) {
 }
 
 function addArrow(parentId) {
-    if (!$("div." + parentId + "").children().length > 0 && parentId !== null) {
+    if (parentId == "") return;
+    if ($("div." + parentId + "").children().length > 1) {
         var html = `<i class="fas fa-caret-down text-center arrowIcon" name="${parentId}"></i>`;
         $("div." + parentId + "").append(html);
     }

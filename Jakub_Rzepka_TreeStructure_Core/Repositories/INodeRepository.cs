@@ -16,5 +16,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
         void EditNode(NodeVM nodeVM);
 
         void DeleteNode(int id);
+
+        void SortNode(List<SortVM> sortVm);
     }
 }

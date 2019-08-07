@@ -69,9 +69,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
 
         public JsonResult SortNode(List<SortVM> sortVm)
         {
-
-            var order = sortVm;
-
+            _nodeRepository.SortNode(sortVm);
             return Json(new { success = true});
         }
     }

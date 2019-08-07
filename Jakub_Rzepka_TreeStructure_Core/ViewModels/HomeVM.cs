@@ -17,5 +17,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.ViewModels
         public int? ParentNodeId { get; set; }
 
         public bool HasChildren { get; set; }
+
+        public int Index { get; set; }
     }
 }

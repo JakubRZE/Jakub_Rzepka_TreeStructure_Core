@@ -18,6 +18,8 @@ namespace Jakub_Rzepka_TreeStructure_Core.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(50)]
         public string Name { get; set; }
 
         public int? ParentNodeId { get; set; }
@@ -25,5 +27,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Models
         public virtual Node ParentNode { get; set; }
 
         public virtual List<Node> SubNodes { get; set; }
+
+        public int Index { get; set; }
     }
 }

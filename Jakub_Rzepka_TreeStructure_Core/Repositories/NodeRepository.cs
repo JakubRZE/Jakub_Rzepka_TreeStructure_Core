@@ -24,9 +24,10 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
                 Id = n.Id,
                 Name = n.Name,
                 ParentNodeId = n.ParentNodeId,
-                HasChildren = n.SubNodes.Any()
+                HasChildren = n.SubNodes.Any(),
+                Index = n.Index
 
-            }).OrderBy(n => n.ParentNodeId).ToList();
+            }).OrderBy(n => n.Index).ToList();
 
             return nodes;
         }
@@ -64,6 +65,23 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
 
             _appDbContext.Update(node);
             _appDbContext.SaveChanges();
+        }
+
+        public void SortNode(List<SortVM> sortVm)
+        {
+            if (sortVm.Any())
+            {
+                Node node = new Node();
+                foreach (var n in sortVm)
+                {
+                    node = _appDbContext.Nodes.Find(n.NodeId);
+                    //node.ParentNodeId = n.ParentId;
+                    node.Index = n.Index;
+
+                    _appDbContext.Update(node);
+                }
+                _appDbContext.SaveChanges();
+            }
         }
     }
 }
