@@ -79,16 +79,12 @@ function makeListAsSortableWidget(token) {
         tolerance: "pointer",
         revert: true,
         placeholder: "ui-state-highlight",
-        update: (event, ui) => {
-
-            saveUpdatedNodeSortOrder(ui,token);
-
-        },
         start: (event, ui) => {
             var liId = ui.item.attr('name');
             $(".space:not(." + liId + ")").show();
         },
         stop: (event, ui) => {
+            saveUpdatedNodeSortOrder(ui, token);
             $(".space").hide();
         }
     }).disableSelection();
@@ -100,8 +96,6 @@ function saveUpdatedNodeSortOrder(ui,token) {
     var parentId = ui.item.parent().attr('id');
 
     Edit(token, "", nodeId, parentId);
-
-    asignOrderIndexToEachNode(parentId);
 
     deleteSlideArrow(ui.item.attr('id'))
     addSlideArrow(parentId);
@@ -131,9 +125,7 @@ function updateIndexs(orderArray) {
         data: {
             sortVm: orderArray
         },
-        success: function (data) {
-            alert("git");
-        }
+        error: (response) => { handleError(response) }
     });
 }
 //
@@ -179,7 +171,7 @@ function Add(token, e, appendTo) {
                 alert('not success')
             }
         },
-        error: () => { alert('Something goes worng:(') }
+        error: (response) => { handleError(response) }
     });
 }
 function nameGenerator() {
@@ -193,11 +185,13 @@ function nameGenerator() {
 //
 
 //Del
-function deleteNodeLocateElement(token) {
-    if ($("input").hasClass("Active")) {
-        var nodeId = $(".Active").attr('name');
-        Delete(token, e, nodeId)
-    }
+function deleteNodeLocateElement(e, token) {
+    if (confirm('Are you sure you want to delete this node (also content) ?')) {
+        if ($("input").hasClass("Active")) {
+            var nodeId = $(".Active").attr('name');
+            Delete(token, e, nodeId)
+        }
+    }  
 }
 function Delete(token, e, nodeId) {
     e.preventDefault();
@@ -226,7 +220,7 @@ function Delete(token, e, nodeId) {
                 alert('not success')
             }
         },
-        error: () => { alert('Something goes worng:(') }
+        error: (response) => { handleError(response) }
     });
 }
 //
@@ -290,6 +284,8 @@ function Edit(token, newName, nodeId, parentId) {
         success: (response) => {
             if (response.success) {
 
+                asignOrderIndexToEachNode(parentId);
+
                 if (response.success) {
                     $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#02d402' });
                     $("#Add, #Del, #Move").removeClass("disabled");
@@ -301,7 +297,7 @@ function Edit(token, newName, nodeId, parentId) {
                 alert('not success')
             }
         },
-        error: () => { alert('Something goes worng:(') }
+        error:(response) => { handleError(response) }
     });
 }
 //
@@ -397,4 +393,8 @@ function slideToggleList(e) {
     $(".Active").removeClass("Active")
     $(ulId).slideToggle();
     $(e.target).toggleClass("flip");
+}
+function handleError(response) {
+    console.log(response.responseText);
+    alert('Something goes worng, try again :<');
 }

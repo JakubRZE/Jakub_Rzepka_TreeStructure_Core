@@ -1,10 +1,11 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Jakub_Rzepka_TreeStructure_Core.DAL;
 using Jakub_Rzepka_TreeStructure_Core.Models;
 using Jakub_Rzepka_TreeStructure_Core.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Jakub_Rzepka_TreeStructure_Core.Repositories
 {
@@ -48,14 +49,22 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
 
         public void DeleteNode(int id)
         {
-            Node node = _appDbContext.Nodes.Find(id);
-            _appDbContext.Nodes.Remove(node);
+            DeleteNodesRecursively(id);
             _appDbContext.SaveChanges();
+        }
+
+        private void DeleteNodesRecursively(int id)
+        {
+            Node node = _appDbContext.Nodes.Include("SubNodes").Single(x => x.Id == id);
+            _appDbContext.Nodes.Remove(node);
+
+            foreach (var child in node.SubNodes)
+                DeleteNodesRecursively(child.Id);
         }
 
         public void EditNode(NodeVM nodeVM)
         {
-            Node node = _appDbContext.Nodes.Find(nodeVM.Id);
+            Node node = _appDbContext.Nodes.Single(x => x.Id == nodeVM.Id);
             if (nodeVM.Name != null) node.Name = nodeVM.Name;
             if (nodeVM.ParentNodeId != null)
             {
@@ -74,8 +83,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Repositories
                 Node node = new Node();
                 foreach (var n in sortVm)
                 {
-                    node = _appDbContext.Nodes.Find(n.NodeId);
-                    //node.ParentNodeId = n.ParentId;
+                    node = _appDbContext.Nodes.Single(x => x.Id == n.NodeId);
                     node.Index = n.Index;
 
                     _appDbContext.Update(node);

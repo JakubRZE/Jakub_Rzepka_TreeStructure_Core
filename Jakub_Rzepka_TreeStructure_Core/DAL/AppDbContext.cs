@@ -26,8 +26,6 @@ namespace Jakub_Rzepka_TreeStructure_Core.DAL
             .HasMany(n => n.SubNodes)
             .WithOne(n => n.ParentNode)
             .HasForeignKey(n => n.ParentNodeId);
-
-            //.OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

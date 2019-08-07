@@ -37,13 +37,19 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult AddNewNode(string name, int? parentId)
         {
-            var newNodeId = _nodeRepository.AddNode(new NodeVM
+            if (!string.IsNullOrEmpty(name))
             {
-                Name = name,
-                ParentNodeId = parentId,
-            });
+                //todo wywalic VM
+                var newNodeId = _nodeRepository.AddNode(new NodeVM
+                {
+                    Name = name,
+                    ParentNodeId = parentId,
+                });
 
-            return Json(new { success = true, nodeName = name, newNodeId, nodeParentId = parentId });
+                return Json(new { success = true, nodeName = name, newNodeId, nodeParentId = parentId });
+            }
+            return Json(new { success = true, message = "Name cannot be empty!" });
+            
         }
 
         [HttpPost]
@@ -58,6 +64,7 @@ namespace Jakub_Rzepka_TreeStructure_Core.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult EditNode(string name, int id, int? parentId)
         {
+            //todo usunac vm
             _nodeRepository.EditNode(new NodeVM
             {
                 Id = id,
