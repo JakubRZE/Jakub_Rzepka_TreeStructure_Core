@@ -16,7 +16,14 @@ function loadData(token) {
         success: (data) => {
 
             treeBuilder(null, data);
-            asignEventHandlers(token);
+            makeListAsSortableWidget(token);
+
+            AddNewNode(token);
+            DeleteNode(token);
+            EditeNodeButton(token);
+            submitEditButton(token);
+
+            EventHandler(token);
 
         },
         error: (xhr, ajaxOptions, thrownError) => {
@@ -26,21 +33,17 @@ function loadData(token) {
     });
 };
 
-function asignEventHandlers(token)
-{
-    makeListAsSortableWidget(token);
-    slideToggleListHandler();
-    SortList();
-    ShowHideDragIcon();
-    MarkAsActive();
-    ShowHideLists();
-    InputFocusOut(token);
-
-    AddNewNode(token);
-    DeleteNode(token);
-    EditeNodeButton(token);
-    submitEditButton(token);
+function EventHandler(token) {
+        $(document).on("click", ".arrowIcon", slideToggleList);
+        $(document).on("click", ".customInput", markListElementAsActive)
+        $(document).on("click", "#Sort", sortListAscDescToggler)
+        $(document).on("click", "#Roll", showHideAllListsToggle)
+        $(document).on("click", "input", howHideDragIcon)
+        $(document).on("focusout", ".customInput", (e) => editingInputOnFocusOut(e, token))
 }
+
+
+
 
 function treeBuilder(parentId, data) {
     for (var node of data.filter(x => x.parentNodeId === parentId)) {
@@ -53,9 +56,7 @@ function treeBuilder(parentId, data) {
 }
 
 function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
-
     var arrowIcon = hasChildren ? `<i class="fas fa-caret-down text-center arrowIcon" name="${nodeId}"></i>` : "";
-
     var htmlForAppend = `<li class="ui-state-default" name="${nodeId}" id="P${parentNodeId}">
                              <div class="flexbox">         
                                 <div class="d-inline ${nodeId}">
@@ -70,36 +71,31 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
                                 <li class="space ${nodeId}" style="display:none;"></li>
                             </ul >
                             </li>`;
-
     $(appendTo).append(htmlForAppend);
 }
 
-function slideToggleListHandler() {
-    $(document).on("click", ".arrowIcon", (e) => slideToggleList(e));
-}
 
-function slideToggleList(e)
-{
+
+
+function slideToggleList(e) {
     var ulId = "#" + e.target.getAttribute('name');
     $(".Active").removeClass("Active")
     $(ulId).slideToggle();
     $(e.target).toggleClass("flip");
 }
 
-function MarkAsActive() {
-    $(document).on("click", ".customInput", (e) => {
-        if (!$(e.target).hasClass("Active")) {
-            $(".Active").removeClass("Active")
-            $(e.target).addClass("Active");
-            $("#Edit, #Del, #Move").removeClass("disabled")
-        }
-        else {
-            $(".Active").removeClass("Active")
-            $('input').blur();
-            $("#Edit, #Del, #Move").addClass("disabled")
-            $(".movable").hide();
-        }
-    });
+function markListElementAsActive(e) {
+    if (!$(e.target).hasClass("Active")) {
+        $(".Active").removeClass("Active");
+        $(e.target).addClass("Active");
+        $("#Edit, #Del, #Move").removeClass("disabled");
+    }
+    else {
+        $(".Active").removeClass("Active");
+        $('input').blur();
+        $("#Edit, #Del, #Move").addClass("disabled")
+        $(".movable").hide();
+    }
 }
 
 function FocusOn(id) {
@@ -107,20 +103,17 @@ function FocusOn(id) {
     $('input[name=' + id + ']').addClass("Active");
 }
 
-function SortList() {
-    $(document).on("click", "#Sort", () => {
-        if (!$("input").hasClass("Active")) {
-            var listClass = ".wrap"
-            SortingEngine(listClass);
-            $(listClass).toggleClass('desc');
-        }
-        else {
-            var listId = "#" + $(".Active").attr('name');
-            SortingEngine(listId);
-            $(listId).toggleClass('desc');
-        }
-
-    });
+function sortListAscDescToggler() {
+    if (!$("input").hasClass("Active")) {
+        var listClass = ".wrap"
+        SortingEngine(listClass);
+        $(listClass).toggleClass('desc');
+    }
+    else {
+        var listId = "#" + $(".Active").attr('name');
+        SortingEngine(listId);
+        $(listId).toggleClass('desc');
+    }
 }
 
 function SortingEngine(listId) {
@@ -139,28 +132,26 @@ function SortingEngine(listId) {
 
 }
 
-function ShowHideLists() {
-    $(document).on("click", "#Roll", (e) => {
-        if (!$(e.target).hasClass("clicked")) {
-            $(e.target).addClass("clicked");
-            $("ul:not(.wrap, .navbar-nav)").slideUp();
-            $(".fa-caret-down").addClass("flip");
-            $("#Roll").addClass("flip-1");
-            $(".customInput").removeClass("Active");
-            $("#Edit, #Del, #Move").addClass("disabled")
-            $(".movable").hide();
-        }
-        else {
-            $(e.target).removeClass("clicked");
-            $("ul:not(.wrap, .navbar-nav)").slideDown();
-            $(".fa-caret-down").removeClass("flip");
-            $("#Roll").removeClass("flip-1");
-            $(".customInput").removeClass("Active");
-            $("#Edit, #Del, #Move").addClass("disabled")
-            $(".movable").hide();
-        }
-    });
+
+function showHideAllListsToggle(e) {
+    if (!$(e.target).hasClass("clicked")) {
+        $(e.target).addClass("clicked");
+        $("ul:not(.wrap, .navbar-nav)").slideUp();
+        $(".fa-caret-down").addClass("flip");
+        $("#Roll").addClass("flip-1");
+        $(".customInput").removeClass("Active");
+        $("#Edit, #Del, #Move").addClass("disabled");
+    }
+    else {
+        $(e.target).removeClass("clicked");
+        $("ul:not(.wrap, .navbar-nav)").slideDown();
+        $(".fa-caret-down").removeClass("flip");
+        $("#Roll").removeClass("flip-1");
+        $(".customInput").removeClass("Active");
+        $("#Edit, #Del, #Move").addClass("disabled");
+    }
 }
+
 
 function makeListAsSortableWidget(token) {
     $(".sortable").sortable({
@@ -213,7 +204,7 @@ function makeListAsSortableWidget(token) {
             //////////////////////////////////////
 
 
-    
+
             deleteArrow(ui.item.attr('id'))
             addArrow(parentId);
 
@@ -230,11 +221,12 @@ function makeListAsSortableWidget(token) {
 }
 
 
-function ShowHideDragIcon() {
-    $(document).on("click", "input", (e) => {
-        var inputName = e.target.getAttribute('name');
+function howHideDragIcon(e) {
+    var inputName = e.target.getAttribute('name');
+    if ($("[name=" + inputName + "]").hasClass("Active"))
+    {
         $('[name=drag' + inputName + ']').show();
-    });
+    }
 }
 
 function AddNewNode(token) {
@@ -401,8 +393,7 @@ function Edit(token, newName, nodeId, parentId) {
 
                 if (response.success) {
                     $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#02d402' });
-                    $("#Add, #Del, #Move").removeClass("disabled")
-                    $(".movable").hide();
+                    $("#Add, #Del, #Move").removeClass("disabled");
                 } else {
                     $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#ff4207' });
                 }
@@ -415,29 +406,24 @@ function Edit(token, newName, nodeId, parentId) {
     });
 }
 
-function InputFocusOut(token) {
-    $(document).on("focusout", ".customInput", (e) => {
 
-        if ($(e.target).attr("readonly") === 'readonly') {
-            var inputName = e.target.getAttribute('name');
-            $('[name=drag' + inputName + ']').hide();
-            $(".movable").hide();
-            $("#Add, #Del, #Move").removeClass("disabled")
-            return;
-        }
+function editingInputOnFocusOut(e, token) {
+    if ($(e.target).attr("readonly") === 'readonly') {
+        var inputName = e.target.getAttribute('name');
+        $('[name=drag' + inputName + ']').hide();
+        $("#Add, #Del, #Move").removeClass("disabled")
+        return;
+    }
 
-        if ($(e.target).val()) submitButtonHandler(token);
-        else {
-            $(e.target).effect("highlight", { color: '#ff4207' }).focus();
-            $(e.target).attr("readonly", true);
-            $("#SubmitEdit").hide();
-            $("#Edit").show();
-            $(e.target).val($(e.target).attr('value'));
-            $(".movable").hide();
-            $("#Add, #Del, #Move").removeClass("disabled")
-        }
-
-    });
+    if ($(e.target).val()) submitButtonHandler(token);
+    else {
+        $(e.target).effect("highlight", { color: '#ff4207' }).focus();
+        $(e.target).attr("readonly", true);
+        $("#SubmitEdit").hide();
+        $("#Edit").show();
+        $(e.target).val($(e.target).attr('value'));
+        $("#Add, #Del, #Move").removeClass("disabled")
+    }
 }
 
 function deleteArrow(id) {
@@ -449,4 +435,3 @@ function deleteArrow(id) {
         }
     }
 }
-
