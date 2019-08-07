@@ -1,7 +1,6 @@
 ﻿$(document).ready(() => {
 
     var token = $('input[name="__RequestVerificationToken"]').val();
-
     loadData(token);
 
 });
@@ -17,19 +16,7 @@ function loadData(token) {
         success: (data) => {
 
             treeBuilder(null, data);
-
-            MakeListSortable(token);
-            SlideToggleList();
-            SortList();
-            ShowHideDragIcon();
-            MarkAsActive();
-            ShowHideLists();
-            InputFocusOut(token);
-
-            AddNewNode(token);
-            DeleteNode(token);
-            EditeNodeButton(token);
-            submitEditButton(token);
+            asignEventHandlers(token);
 
         },
         error: (xhr, ajaxOptions, thrownError) => {
@@ -38,6 +25,22 @@ function loadData(token) {
         }
     });
 };
+
+function asignEventHandlers(token)
+{
+    makeListAsSortableWidget(token);
+    slideToggleListHandler();
+    SortList();
+    ShowHideDragIcon();
+    MarkAsActive();
+    ShowHideLists();
+    InputFocusOut(token);
+
+    AddNewNode(token);
+    DeleteNode(token);
+    EditeNodeButton(token);
+    submitEditButton(token);
+}
 
 function treeBuilder(parentId, data) {
     for (var node of data.filter(x => x.parentNodeId === parentId)) {
@@ -71,13 +74,16 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
     $(appendTo).append(htmlForAppend);
 }
 
-function SlideToggleList() {
-    $(document).on("click", ".arrowIcon", (e) => {
-        var ulId = "#" + e.target.getAttribute('name');
-        $(".Active").removeClass("Active")
-        $(ulId).slideToggle();
-        $(e.target).toggleClass("flip");
-    });
+function slideToggleListHandler() {
+    $(document).on("click", ".arrowIcon", (e) => slideToggleList(e));
+}
+
+function slideToggleList(e)
+{
+    var ulId = "#" + e.target.getAttribute('name');
+    $(".Active").removeClass("Active")
+    $(ulId).slideToggle();
+    $(e.target).toggleClass("flip");
 }
 
 function MarkAsActive() {
@@ -156,13 +162,13 @@ function ShowHideLists() {
     });
 }
 
-function MakeListSortable(token) {
+function makeListAsSortableWidget(token) {
     $(".sortable").sortable({
         disabled: false,
-        //tolerance: 'pointer',
-        items: 'li',
+        items: 'li:not(.space)',
         connectWith: ".connectedSortable",
         containment: ".scroll",
+        tolerance: "pointer",
         revert: true,
         placeholder: "ui-state-highlight",
         update: (event, ui) => {
@@ -283,7 +289,7 @@ function AddNode(token, e, appendTo) {
 
 function addArrow(parentId) {
     if (parentId == "") return;
-    if ($("div." + parentId + "").children().length > 1) {
+    if ($("div." + parentId + "").children().length < 1) {
         var html = `<i class="fas fa-caret-down text-center arrowIcon" name="${parentId}"></i>`;
         $("div." + parentId + "").append(html);
     }
