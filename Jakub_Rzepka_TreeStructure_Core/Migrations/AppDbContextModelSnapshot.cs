@@ -38,6 +38,81 @@ namespace Jakub_Rzepka_TreeStructure_Core.Migrations
                     b.HasIndex("ParentNodeId");
 
                     b.ToTable("Nodes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Index = 1,
+                            Name = "Europe"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Index = 0,
+                            Name = "Poland",
+                            ParentNodeId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Index = 0,
+                            Name = "Rzeszow",
+                            ParentNodeId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Index = 1,
+                            Name = "Warsaw",
+                            ParentNodeId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Index = 2,
+                            Name = "Asia"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Index = 0,
+                            Name = "China",
+                            ParentNodeId = 5
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Index = 1,
+                            Name = "Philippines",
+                            ParentNodeId = 5
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Index = 3,
+                            Name = "South America"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Index = 0,
+                            Name = "Mexico",
+                            ParentNodeId = 8
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Index = 1,
+                            Name = "Brazil",
+                            ParentNodeId = 8
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Index = 4,
+                            Name = "Australia"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

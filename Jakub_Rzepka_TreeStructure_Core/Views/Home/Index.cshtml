@@ -11,25 +11,32 @@
 
 <div class="row">
     <div class="col-12 border-bottom border-warning p-3">
-            @if (User.Identity.IsAuthenticated)
-            {
-                <div class="d-inline float-left">
-                    <i id="Add" class="fas fa-folder-plus IcoBtn border-right float-left"></i>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="d-inline float-left">
+                <i id="Add" class="fas fa-folder-plus IcoBtn border-right float-left"></i>
 
 
-                    <i id="Del" class="fas fa-trash-alt IcoBtn border-right float-left disabled"></i>
+                <i id="Del" class="fas fa-trash-alt IcoBtn border-right float-left disabled"></i>
 
-                    <i id="Edit" class="fas fa-edit IcoBtn float-left disabled"></i>
-                    <i id="SubmitEdit" class="fas fa-check-circle IcoBtn" style="display: none;"></i>
-                </div>
-                <i id="Logged" name="true" style="display:none;"></i>
-            }
-            <div class="float-right">
-                <i id="Roll" class="fas fa-angle-double-up IcoBtn float-right"></i>
-                <i id="Sort" class="fas fa-sort-alpha-up IcoBtn float-right border-right"></i>
+                <i id="Edit" class="fas fa-edit IcoBtn float-left disabled"></i>
+                <i id="SubmitEdit" class="fas fa-check-circle IcoBtn" style="display: none;"></i>
             </div>
-
+        }
+        else
+        {
+            <div class="d-inline float-left pt-4">
+                <a class="nav-link text-dark p-0 m-0" asp-area="Identity" asp-page="/Account/Login">
+                    Login to get more advanced options!
+                </a>
+            </div>
+        }
+        <div class="float-right">
+            <i id="Roll" class="fas fa-angle-double-up IcoBtn float-right"></i>
+            <i id="Sort" class="fas fa-sort-alpha-up IcoBtn float-right border-right"></i>
         </div>
+
+    </div>
 </div>
 
 

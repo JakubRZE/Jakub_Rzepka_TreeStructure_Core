@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Jakub_Rzepka_TreeStructure_Core.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -173,6 +173,39 @@ namespace Jakub_Rzepka_TreeStructure_Core.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Nodes",
+                columns: new[] { "Id", "Index", "Name", "ParentNodeId" },
+                values: new object[,]
+                {
+                    { 1, 1, "Europe", null },
+                    { 5, 2, "Asia", null },
+                    { 8, 3, "South America", null },
+                    { 11, 4, "Australia", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Nodes",
+                columns: new[] { "Id", "Index", "Name", "ParentNodeId" },
+                values: new object[,]
+                {
+                    { 2, 0, "Poland", 1 },
+                    { 6, 0, "China", 5 },
+                    { 7, 1, "Philippines", 5 },
+                    { 9, 0, "Mexico", 8 },
+                    { 10, 1, "Brazil", 8 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Nodes",
+                columns: new[] { "Id", "Index", "Name", "ParentNodeId" },
+                values: new object[] { 3, 0, "Rzeszow", 2 });
+
+            migrationBuilder.InsertData(
+                table: "Nodes",
+                columns: new[] { "Id", "Index", "Name", "ParentNodeId" },
+                values: new object[] { 4, 1, "Warsaw", 2 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
