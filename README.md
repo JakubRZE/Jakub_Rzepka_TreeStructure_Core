@@ -8,7 +8,7 @@ Aplikacja pozwalająca użytkownikowi na zapisywanie danych oraz ich zarządznie
 - Funkcje dostępne dla użytkowników niezalogowanych: odczyt danych, rozwinięcia całej struktury lub wybranych węzłów, sortowanie.
 - Funkcje dostęne po zalogowaniu: dodawanie, edycja, usuwania, sortowanie (zarówno węzłów jak i liści) z zapamiętaniem pozycji, 
   przenoszenie węzłów do innych gałęzi.
-- Zabezpieczenia po stronei klienta oraz serwera przed wprowadzeniem nieprawidłowych danych.
+- Zabezpieczenia po stronie klienta, oraz serwera przed wprowadzeniem nieprawidłowych danych.
 
 <br />
 Aby dodać dziecko, edytować lub usunać wybrany element,należy zaznaczyć go na liście poprzez kliknięcie (bedzie żółty)<br />
