@@ -27,7 +27,6 @@ function loadData(token) {
         }
     });
 };
-
 function EventHandler(token) {
     $(document).on("click", ".arrowIcon", slideToggleList);
     $(document).on("click", ".customInput", markListElementAsActive);
@@ -40,7 +39,6 @@ function EventHandler(token) {
     $(document).on("click", "#Edit", enableNodeEditing);
     $(document).on("click", "#SubmitEdit", () => submitNodeEditingMode(token));
 }
-
 
 function treeBuilder(parentId, data) {
     for (var node of data.filter(x => x.parentNodeId === parentId)) {
@@ -91,7 +89,7 @@ function makeListAsSortableWidget(token) {
 }
 
 //SaveOrder
-function saveUpdatedNodeSortOrder(ui,token) {
+function saveUpdatedNodeSortOrder(ui, token) {
     var nodeId = ui.item.attr('name');
     var parentId = ui.item.parent().attr('id');
 
@@ -124,8 +122,7 @@ function updateIndexs(orderArray) {
         type: 'POST',
         data: {
             sortVm: orderArray
-        },
-        error: (response) => { handleError(response) }
+        }
     });
 }
 //
@@ -149,8 +146,8 @@ function Add(token, e, appendTo) {
         dataType: 'json',
         data: {
             __RequestVerificationToken: token,
-            name: nameGenerator(),
-            parentId: parentListId
+            Name: nameGenerator(),
+            ParentNodeId: parentListId
         },
         success: (response) => {
             if (response.success) {
@@ -168,7 +165,7 @@ function Add(token, e, appendTo) {
                 $(".selector").sortable("refresh");
 
             } else {
-                alert('not success')
+                alert('Something goes worng, try again :<');
             }
         },
         error: (response) => { handleError(response) }
@@ -191,7 +188,7 @@ function deleteNodeLocateElement(e, token) {
             var nodeId = $(".Active").attr('name');
             Delete(token, e, nodeId)
         }
-    }  
+    }
 }
 function Delete(token, e, nodeId) {
     e.preventDefault();
@@ -217,7 +214,7 @@ function Delete(token, e, nodeId) {
                 deleteSlideArrow(parentId);
 
             } else {
-                alert('not success')
+                alert('Something goes worng, try again :<');
             }
         },
         error: (response) => { handleError(response) }
@@ -269,7 +266,6 @@ function editingInputOnFocusOut(e, token) {
     }
 }
 function Edit(token, newName, nodeId, parentId) {
-
     $.ajax({
         url: '/Home/EditNode',
         method: 'POST',
@@ -277,27 +273,22 @@ function Edit(token, newName, nodeId, parentId) {
         dataType: 'json',
         data: {
             __RequestVerificationToken: token,
-            name: newName,
-            id: nodeId,
-            parentId: parentId
+            Id: nodeId,
+            Name: newName,
+            ParentNodeId: parentId
         },
         success: (response) => {
             if (response.success) {
 
                 asignOrderIndexToEachNode(parentId);
-
-                if (response.success) {
-                    $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#02d402' });
-                    $("#Add, #Del, #Move").removeClass("disabled");
-                } else {
-                    $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#ff4207' });
-                }
+                $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#02d402' });
+                $("#Add, #Del, #Move").removeClass("disabled");
 
             } else {
-                alert('not success')
+                $("input[name = '" + response.nodeId + "']").effect("highlight", { color: '#ff4207' });
             }
         },
-        error:(response) => { handleError(response) }
+        error: (response) => { handleError(response) }
     });
 }
 //
@@ -312,9 +303,9 @@ function sortListAscDescToggler() {
     }
     else {
         var listId = $(".Active").attr('name');
-        SortingEngine("#"+listId);
+        SortingEngine("#" + listId);
         asignOrderIndexToEachNode(listId)
-        $("#"+listId).toggleClass('desc');
+        $("#" + listId).toggleClass('desc');
     }
 }
 function SortingEngine(listId) {

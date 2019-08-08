@@ -1,5 +1,4 @@
-﻿@*@model List<Node>*@
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -7,27 +6,30 @@
     @*<span class="d-inline" style="font-size: 2.5em;">
             Tree structure <i class="fas fa-sitemap pl-2"></i>
         </span>*@
-    <h1>Home</h1>
+    <h1>TreeStructure</h1>
 </div>
 
 <div class="row">
     <div class="col-12 border-bottom border-warning p-3">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="d-inline float-left">
+                    <i id="Add" class="fas fa-folder-plus IcoBtn border-right float-left"></i>
 
-        <div class="d-inline float-left">
-            <i id="Add" class="fas fa-folder-plus IcoBtn border-right float-left"></i>
 
+                    <i id="Del" class="fas fa-trash-alt IcoBtn border-right float-left disabled"></i>
 
-            <i id="Del" class="fas fa-trash-alt IcoBtn border-right float-left disabled"></i>
+                    <i id="Edit" class="fas fa-edit IcoBtn float-left disabled"></i>
+                    <i id="SubmitEdit" class="fas fa-check-circle IcoBtn" style="display: none;"></i>
+                </div>
+                <i id="Logged" name="true" style="display:none;"></i>
+            }
+            <div class="float-right">
+                <i id="Roll" class="fas fa-angle-double-up IcoBtn float-right"></i>
+                <i id="Sort" class="fas fa-sort-alpha-up IcoBtn float-right border-right"></i>
+            </div>
 
-            <i id="Edit" class="fas fa-edit IcoBtn float-left disabled"></i>
-            <i id="SubmitEdit" class="fas fa-check-circle IcoBtn" style="display: none;"></i>
         </div>
-        <div class="float-right">
-            <i id="Roll" class="fas fa-angle-double-up IcoBtn float-right"></i>
-            <i id="Sort" class="fas fa-sort-alpha-up IcoBtn float-right border-right"></i>
-        </div>
-
-    </div>
 </div>
 
 
