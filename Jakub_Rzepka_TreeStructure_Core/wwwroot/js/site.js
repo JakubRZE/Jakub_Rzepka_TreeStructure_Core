@@ -166,6 +166,9 @@ function Add(token, e, appendTo) {
                 $("#Edit, #Del, #Move").removeClass("disabled");
                 focusOnElement(response.newNodeId);
 
+                var parentId = response.nodeParentId === null ? "0" : response.nodeParentId;
+                asignOrderIndexToEachNode(parentId)
+
                 $("#Add").removeClass("disabled");
                 $(".selector").sortable("refresh");
 
