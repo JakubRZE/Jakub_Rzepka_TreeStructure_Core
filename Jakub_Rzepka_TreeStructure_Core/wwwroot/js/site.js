@@ -32,7 +32,7 @@ function EventHandler(token) {
     $(document).on("click", ".customInput", markListElementAsActive);
     $(document).on("click", "#Sort", sortListAscDescToggler);
     $(document).on("click", "#Roll", showHideAllListsToggle);
-    $(document).on("click", "input", howHideDragIcon);
+    $(document).on("click", "input", showHideDragIcon);
     $(document).on("focusout", ".customInput", (e) => editingInputOnFocusOut(e, token));
     $(document).on("click", "#Add", (e) => AddNewNodeLocateParent(e, token));
     $(document).on("click", "#Del", (e) => deleteNodeLocateElement(e, token));
@@ -70,7 +70,7 @@ function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
 
 function makeListAsSortableWidget(token) {
     $(".sortable").sortable({
-        disabled: false,
+        disabled: disableSortableWidget(),
         items: 'li:not(.space)',
         connectWith: ".connectedSortable",
         containment: ".scroll",
@@ -87,6 +87,9 @@ function makeListAsSortableWidget(token) {
         }
     }).disableSelection();
 }
+function disableSortableWidget() {
+    return $("#logged").hasClass("logged") ? false : true;
+}
 
 //SaveOrder
 function saveUpdatedNodeSortOrder(ui, token) {
@@ -100,21 +103,23 @@ function saveUpdatedNodeSortOrder(ui, token) {
     ui.item.attr('id', "P" + parentId);
 }
 function asignOrderIndexToEachNode(parentId) {
-    var orderArray = [];
+    if (!disableSortableWidget()) {
+        var orderArray = [];
 
-    $("#" + parentId).children('li:not(.space)').each(function (i) {
-        var index = $(this).index();
-        var nodeId = $(this).attr('name');
-        var order =
-        {
-            Index: index,
-            NodeId: nodeId,
-            ParentId: parentId
-        };
-        orderArray.push(order);
-    });
+        $("#" + parentId).children('li:not(.space)').each(function (i) {
+            var index = $(this).index();
+            var nodeId = $(this).attr('name');
+            var order =
+            {
+                Index: index,
+                NodeId: nodeId,
+                ParentId: parentId
+            };
+            orderArray.push(order);
+        });
 
-    updateIndexs(orderArray);
+        updateIndexs(orderArray);
+    }
 }
 function updateIndexs(orderArray) {
     $.ajax({
@@ -353,10 +358,12 @@ function markListElementAsActive(e) {
         $(".movable").hide();
     }
 }
-function howHideDragIcon(e) {
-    var inputName = e.target.getAttribute('name');
-    if ($("[name=" + inputName + "]").hasClass("Active")) {
-        $('[name=drag' + inputName + ']').show();
+function showHideDragIcon(e) {
+    if (!disableSortableWidget()) {
+        var inputName = e.target.getAttribute('name');
+        if ($("[name=" + inputName + "]").hasClass("Active")) {
+            $('[name=drag' + inputName + ']').show();
+        }
     }
 }
 function deleteSlideArrow(id) {

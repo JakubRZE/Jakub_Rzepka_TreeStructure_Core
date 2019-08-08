@@ -3,9 +3,6 @@
 }
 
 <div class="text-center p-1 mt-5">
-    @*<span class="d-inline" style="font-size: 2.5em;">
-            Tree structure <i class="fas fa-sitemap pl-2"></i>
-        </span>*@
     <h1>TreeStructure</h1>
 </div>
 
@@ -13,7 +10,7 @@
     <div class="col-12 border-bottom border-warning p-3">
         @if (User.Identity.IsAuthenticated)
         {
-            <div class="d-inline float-left">
+            <div id="logged" class="d-inline float-left logged">
                 <i id="Add" class="fas fa-folder-plus IcoBtn border-right float-left"></i>
 
 
@@ -25,7 +22,7 @@
         }
         else
         {
-            <div class="d-inline float-left pt-4">
+            <div id="logged" class="d-inline float-left pt-4">
                 <a class="nav-link text-dark p-0 m-0" asp-area="Identity" asp-page="/Account/Login">
                     Login to get more advanced options!
                 </a>
