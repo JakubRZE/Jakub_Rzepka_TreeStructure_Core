@@ -11,10 +11,10 @@ Aplikacja pozwalająca użytkownikowi na zapisywanie danych oraz ich zarządznie
 - Zabezpieczenia po stronie klienta, oraz serwera przed wprowadzeniem nieprawidłowych danych.
 
 <br />
-Aby dodać dziecko, edytować lub usunać wybrany element,należy zaznaczyć go na liście poprzez kliknięcie (bedzie żółty)<br />
+Aby dodać dziecko, edytować lub usunąć wybrany element, należy zaznaczyć go na liście poprzez kliknięcie (element stanie się żółty)<br />
 (w celu odznaczenia klikamy ponownie na ten sam element).<br />
-Przenoszenie elementów listy odbywa sie za pomocą ikonki strzałek po prawej stronie, po zaznaczeniu elementu.
-Aby dodać kolejnego rodzica należy odznaczyć wysztkie elementy.
+Przenoszenie elementów listy odbywa sie za pomocą ikonki strzałek po prawej stronie, dostępnych po zaznaczeniu elementu.
+Aby dodać kolejnego głownego rodzica należy mieć odznaczone wysztkie elementy.
 <br /><br />
 
 Aplikacja znajduje się na serwerze Azure pod adresem:<br />
