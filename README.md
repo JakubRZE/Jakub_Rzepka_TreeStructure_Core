@@ -2,7 +2,7 @@
 ASP.NET MVC Core 2.2 / JQuery / AJAX / Dependency Injection / Azure
 <br /><br />
 
-Aplikacja pozwalająca użytkownikowi na zapisywanie danych oraz ich zarządznie w strkurze drzewiastej.
+Aplikacja pozwalająca użytkownikowi na zapisywanie danych oraz ich zarządzanie w strkurze drzewiastej.
 
 - Struktura drzewiasta umożliwia działanie na dowolnej ilości poziomów.
 - Funkcje dostępne dla użytkowników niezalogowanych: odczyt danych, rozwinięcia całej struktury lub wybranych węzłów, sortowanie.
