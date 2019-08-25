@@ -2,19 +2,19 @@
 ASP.NET MVC Core 2.2 / JQuery / AJAX / Dependency Injection / Azure
 <br /><br />
 
-Aplikacja pozwalająca użytkownikowi na zapisywanie danych oraz ich zarządzanie w strkurze drzewiastej.
+Aplikacja pozwalająca użytkownikowi na zapisywanie danych oraz ich zarządzanie w strukturze drzewiastej.
 
 - Struktura drzewiasta umożliwia działanie na dowolnej ilości poziomów.
 - Funkcje dostępne dla użytkowników niezalogowanych: odczyt danych, rozwinięcia całej struktury lub wybranych węzłów, sortowanie.
-- Funkcje dostęne po zalogowaniu: dodawanie, edycja, usuwania, sortowanie (zarówno węzłów jak i liści) z zapamiętaniem pozycji, 
+- Funkcje dostępne po zalogowaniu: dodawanie, edycja, usuwania, sortowanie (zarówno węzłów jak i liści) z zapamiętaniem pozycji, 
   przenoszenie węzłów do innych gałęzi.
 - Zabezpieczenia po stronie klienta, oraz serwera przed wprowadzeniem nieprawidłowych danych.
 
 <br />
 Aby dodać dziecko, edytować lub usunąć wybrany element, należy zaznaczyć go na liście poprzez kliknięcie (element stanie się żółty)<br />
 (w celu odznaczenia klikamy ponownie na ten sam element).<br />
-Przenoszenie elementów listy odbywa sie za pomocą ikonki strzałek po prawej stronie, dostępnych po zaznaczeniu elementu.
-Aby dodać kolejnego głownego rodzica należy mieć odznaczone wysztkie elementy(odznaczamy poprzez ponowne kliknięcie na element).
+Przenoszenie elementów listy odbywa się za pomocą ikonki strzałek po prawej stronie, dostępnych po zaznaczeniu elementu.
+Aby dodać kolejnego głównego rodzica należy mieć odznaczone wszystkie elementy(odznaczamy poprzez ponowne kliknięcie na element).
 <br /><br />
 
 Aplikacja znajduje się na serwerze Azure pod adresem:<br />
