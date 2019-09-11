@@ -18,7 +18,7 @@ function loadData(token) {
             treeBuilder(null, data);
             makeListAsSortableWidget(token);
 
-            EventHandler(token);
+            eventHandler(token);
 
         },
         error: (xhr, ajaxOptions, thrownError) => {
@@ -27,14 +27,14 @@ function loadData(token) {
         }
     });
 };
-function EventHandler(token) {
+function eventHandler(token) {
     $(document).on("click", ".arrowIcon", slideToggleList);
     $(document).on("click", ".customInput", markListElementAsActive);
     $(document).on("click", "#Sort", sortListAscDescToggler);
     $(document).on("click", "#Roll", showHideAllListsToggle);
     $(document).on("click", "input", showHideDragIcon);
     $(document).on("focusout", ".customInput", (e) => editingInputOnFocusOut(e, token));
-    $(document).on("click", "#Add", (e) => AddNewNodeLocateParent(e, token));
+    $(document).on("click", "#Add", (e) => addNewNodeLocateParent(e, token));
     $(document).on("click", "#Del", (e) => deleteNodeLocateElement(e, token));
     $(document).on("click", "#Edit", enableNodeEditing);
     $(document).on("click", "#SubmitEdit", () => submitNodeEditingMode(token));
@@ -44,12 +44,12 @@ function treeBuilder(parentId, data) {
     for (var node of data.filter(x => x.parentNodeId === parentId)) {
 
         var appendTo = parentId === null ? '.wrap' : "#" + node.parentNodeId;
-        GenerateHTML(node.name, node.id, node.parentNodeId, node.hasChildren, appendTo);
+        generateHTML(node.name, node.id, node.parentNodeId, node.hasChildren, appendTo);
 
         treeBuilder(node.id, data);
     }
 }
-function GenerateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
+function generateHTML(nodeName, nodeId, parentNodeId, hasChildren, appendTo) {
     var arrowIcon = hasChildren ? `<i class="fas fa-caret-down text-center arrowIcon" name="${nodeId}"></i>` : "";
     var htmlForAppend = `<li class="ui-state-default" name="${nodeId}" id="P${parentNodeId}">
                              <div class="flexbox">         
@@ -96,7 +96,7 @@ function saveUpdatedNodeSortOrder(ui, token) {
     var nodeId = ui.item.attr('name');
     var parentId = ui.item.parent().attr('id');
 
-    Edit(token, "", nodeId, parentId);
+    edit(token, "", nodeId, parentId);
 
     deleteSlideArrow(ui.item.attr('id'))
     addSlideArrow(parentId);
@@ -133,12 +133,12 @@ function updateIndexs(orderArray) {
 //
 
 //Add
-function AddNewNodeLocateParent(e, token) {
+function addNewNodeLocateParent(e, token) {
     var appendTo = $("input").hasClass("Active") ? $(".Active").attr('name') : ".wrap";
     $("#Add").addClass("disabled");
-    Add(token, e, appendTo)
+    add(token, e, appendTo);
 }
-function Add(token, e, appendTo) {
+function add(token, e, appendTo) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
@@ -160,7 +160,7 @@ function Add(token, e, appendTo) {
                 var parentId = response.nodeParentId === null ? "" : response.nodeParentId;
                 if (appendTo !== ".wrap") appendTo = "#" + appendTo;
 
-                GenerateHTML(response.nodeName, response.newNodeId, parentId, false, appendTo);
+                generateHTML(response.nodeName, response.newNodeId, parentId, false, appendTo);
                 addSlideArrow(parentId);
 
                 $("#Edit, #Del, #Move").removeClass("disabled");
@@ -194,11 +194,11 @@ function deleteNodeLocateElement(e, token) {
     if (confirm('Are you sure you want to delete this node (also content) ?')) {
         if ($("input").hasClass("Active")) {
             var nodeId = $(".Active").attr('name');
-            Delete(token, e, nodeId)
+            deleteNode(token, e, nodeId)
         }
     }
 }
-function Delete(token, e, nodeId) {
+function deleteNode(token, e, nodeId) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
@@ -253,7 +253,7 @@ function submitNodeEditingMode(token) {
         $("#SubmitEdit").hide();
         $("#Edit").show();
         var newName = $(inputName).val();
-        Edit(token, newName, nodeId, null);
+        edit(token, newName, nodeId, null);
     }
 }
 function editingInputOnFocusOut(e, token) {
@@ -273,7 +273,7 @@ function editingInputOnFocusOut(e, token) {
         $("#Add, #Del, #Move").removeClass("disabled")
     }
 }
-function Edit(token, newName, nodeId, parentId) {
+function edit(token, newName, nodeId, parentId) {
     $.ajax({
         url: '/Home/EditNode',
         method: 'POST',
@@ -305,18 +305,18 @@ function sortListAscDescToggler() {
     if (!$("input").hasClass("Active")) {
         var listClass = ".wrap"
         var listId = $("#0").attr('id')
-        SortingEngine(listClass);
+        sortingEngine(listClass);
         asignOrderIndexToEachNode(0)
         $(listClass).toggleClass('desc');
     }
     else {
         var listId = $(".Active").attr('name');
-        SortingEngine("#" + listId);
+        sortingEngine("#" + listId);
         asignOrderIndexToEachNode(listId)
         $("#" + listId).toggleClass('desc');
     }
 }
-function SortingEngine(listId) {
+function sortingEngine(listId) {
     $(listId).html(
         $(listId).children("li.ui-state-default").sort(function (a, b) {
             if (!$(listId).hasClass("desc")) {
