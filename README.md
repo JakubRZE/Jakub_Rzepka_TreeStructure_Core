@@ -18,7 +18,7 @@ Aby dodać kolejnego głównego rodzica należy mieć odznaczone wszystkie eleme
 <br /><br />
 
 Aplikacja znajduje się na serwerze Azure pod adresem:<br />
-<b>https://jrtreestructure.azurewebsites.net/</b>
+<b>https://jtreestructure.azurewebsites.net/</b>
 <br /><br />
 
 <b>Przykładowe dane do logowania:</b><br />
